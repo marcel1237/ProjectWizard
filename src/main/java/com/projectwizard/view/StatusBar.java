@@ -1,5 +1,6 @@
 package com.projectwizard.view;
 
+import com.projectwizard.core.ApplicationContext;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -10,9 +11,11 @@ public class StatusBar extends HBox {
 
     public StatusBar() {
 
+        ApplicationContext context = new ApplicationContext();
+
         Label status = new Label("Ready");
 
-        Label version = new Label("1.0");
+        Label version = new Label(context.getVersion());
 
         HBox spacer = new HBox();
 

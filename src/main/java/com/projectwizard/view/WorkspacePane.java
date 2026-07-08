@@ -1,13 +1,40 @@
 package com.projectwizard.view;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
+import com.projectwizard.core.navigation.NavigationController;
 
-public class WorkspacePane extends StackPane {
+import com.projectwizard.view.dashboard.DashboardView;
+import javafx.scene.Node;
+import javafx.scene.layout.BorderPane;
+
+public class WorkspacePane extends BorderPane {
+
+    private static WorkspacePane instance;
 
     public WorkspacePane() {
 
-        getChildren().add(new Label("Workspace"));
+        instance = this;
+
+        NavigationController.getInstance().setWorkspace(this);
+
+        showDashboard();
+
+    }
+
+    public static WorkspacePane getInstance() {
+
+        return instance;
+
+    }
+
+    public void setContent(Node node) {
+
+        setCenter(node);
+
+    }
+
+    public void showDashboard() {
+
+        setContent(new DashboardView());
 
     }
 

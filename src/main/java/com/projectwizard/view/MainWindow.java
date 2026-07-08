@@ -1,5 +1,6 @@
 package com.projectwizard.view;
 
+import com.projectwizard.core.ApplicationContext;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -10,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainWindow {
+
+    private final ApplicationContext context = new ApplicationContext();
 
     public void show(Stage stage) {
 
@@ -24,6 +27,16 @@ public class MainWindow {
         exitItem.setOnAction(e -> stage.close());
 
         MenuItem aboutItem = new MenuItem("About");
+
+        aboutItem.setOnAction(e ->
+                context.getDialogService().showInformation(
+                        "About Project Wizard",
+                        context.getApplicationName()
+                        + "\n\nVersion " + context.getVersion()
+                        + "\n\nDesktop Project Generator"
+                        + "\nBuilt with JavaFX"
+                )
+        );
 
         fileMenu.getItems().add(exitItem);
         helpMenu.getItems().add(aboutItem);
@@ -48,7 +61,7 @@ public class MainWindow {
 
         Scene scene = new Scene(root, 1100, 700);
 
-        stage.setTitle("Project Wizard");
+        stage.setTitle(context.getApplicationName());
         stage.setScene(scene);
 
         stage.centerOnScreen();
