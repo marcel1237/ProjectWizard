@@ -1,6 +1,9 @@
 package com.projectwizard.view;
 
 import com.projectwizard.core.ApplicationContext;
+import com.projectwizard.core.navigation.NavigationController;
+import com.projectwizard.core.navigation.NavigationTarget;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -18,6 +21,10 @@ public class MainWindow {
 
         BorderPane root = new BorderPane();
 
+        //////////////////////////////////////////////////////
+        // MENU
+        //////////////////////////////////////////////////////
+
         MenuBar menuBar = new MenuBar();
 
         Menu fileMenu = new Menu("File");
@@ -29,13 +36,8 @@ public class MainWindow {
         MenuItem aboutItem = new MenuItem("About");
 
         aboutItem.setOnAction(e ->
-                context.getDialogService().showInformation(
-                        "About Project Wizard",
-                        context.getApplicationName()
-                        + "\n\nVersion " + context.getVersion()
-                        + "\n\nDesktop Project Generator"
-                        + "\nBuilt with JavaFX"
-                )
+            NavigationController.getInstance()
+                    .navigate(NavigationTarget.ABOUT)
         );
 
         fileMenu.getItems().add(exitItem);
@@ -48,24 +50,55 @@ public class MainWindow {
                 new MainToolBar()
         );
 
-        SplitPane splitPane = new SplitPane(
-                new NavigationPane(),
-                new WorkspacePane()
+        //////////////////////////////////////////////////////
+        // WORKSPACE
+        //////////////////////////////////////////////////////
+
+        WorkspacePane workspace = new WorkspacePane();
+
+        NavigationController
+                .getInstance()
+                .setWorkspace(workspace);
+
+        NavigationPane navigation = new NavigationPane();
+
+        SplitPane split = new SplitPane();
+
+        split.getItems().addAll(
+
+                navigation,
+
+                workspace
+
         );
 
-        splitPane.setDividerPositions(0.22);
+        split.setDividerPositions(0.22);
+
+        //////////////////////////////////////////////////////
+        // ROOT
+        //////////////////////////////////////////////////////
 
         root.setTop(top);
-        root.setCenter(splitPane);
+        root.setCenter(split);
         root.setBottom(new StatusBar());
 
-        Scene scene = new Scene(root, 1100, 700);
+        Scene scene = new Scene(root,1100,700);
 
         stage.setTitle(context.getApplicationName());
+
         stage.setScene(scene);
 
         stage.centerOnScreen();
+
         stage.show();
+
+        //////////////////////////////////////////////////////
+        // DASHBOARD INICIAL
+        //////////////////////////////////////////////////////
+
+        NavigationController
+                .getInstance()
+                .navigate(NavigationTarget.HOME);
 
     }
 

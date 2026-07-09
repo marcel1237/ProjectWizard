@@ -5,13 +5,6 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/core/Version.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/core/navigation/NavigationController.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/core/navigation/NavigationTarget.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/navigation/NavigationListener.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/navigation/NavigationService.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/navigation/NavigationTarget.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/view/NewProjectPane.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/view/WelcomePane.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/view/views/HomeView.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/legacy/view/views/NewProjectView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/DialogService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/FileSystemService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/NavigationService.java
@@ -26,6 +19,8 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/WorkspacePane.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/about/AboutView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/dashboard/DashboardView.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/explorer/FileTreeCell.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/explorer/PackageExplorer.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/git/GitView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/github/GitHubView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/newproject/NewProjectView.java
