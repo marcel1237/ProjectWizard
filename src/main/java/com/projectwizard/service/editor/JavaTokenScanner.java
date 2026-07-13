@@ -37,7 +37,11 @@ public class JavaTokenScanner {
             case ITerminalSymbols.TokenNameStringLiteral -> "token-string";
             case ITerminalSymbols.TokenNameCOMMENT_BLOCK, ITerminalSymbols.TokenNameCOMMENT_LINE -> "token-comment";
             case ITerminalSymbols.TokenNameint, ITerminalSymbols.TokenNamepublic, ITerminalSymbols.TokenNameclass, 
-                 ITerminalSymbols.TokenNamestatic, ITerminalSymbols.TokenNamevoid, ITerminalSymbols.TokenNamereturn -> "token-keyword";
+                 ITerminalSymbols.TokenNamestatic, ITerminalSymbols.TokenNamevoid, ITerminalSymbols.TokenNamereturn,
+                 ITerminalSymbols.TokenNameprivate, ITerminalSymbols.TokenNameprotected, ITerminalSymbols.TokenNameif,
+                 ITerminalSymbols.TokenNameelse, ITerminalSymbols.TokenNamefor, ITerminalSymbols.TokenNamewhile,
+                 ITerminalSymbols.TokenNametry, ITerminalSymbols.TokenNamecatch, ITerminalSymbols.TokenNamefinally,
+                 ITerminalSymbols.TokenNamenew, ITerminalSymbols.TokenNameimport, ITerminalSymbols.TokenNamepackage -> "token-keyword";
             default -> "token-default";
         };
     }
