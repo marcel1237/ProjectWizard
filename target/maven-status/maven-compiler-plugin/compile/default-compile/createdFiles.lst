@@ -4,6 +4,7 @@ com/projectwizard/service/git/GitService.class
 com/projectwizard/workspace/ProjectWorkspace.class
 com/projectwizard/view/explorer/FileTreeCell.class
 com/projectwizard/view/explorer/PackageExplorer$1.class
+com/projectwizard/view/editor/EditorSupport.class
 com/projectwizard/view/projecttype/ProjectCard.class
 com/projectwizard/service/FileSystemService.class
 com/projectwizard/core/navigation/NavigationTarget.class
@@ -20,6 +21,7 @@ com/projectwizard/view/projecttype/ProjectTypeView.class
 com/projectwizard/core/navigation/NavigationController.class
 com/projectwizard/theme/ThemeManager$1.class
 com/projectwizard/core/Constants.class
+com/projectwizard/view/editor/EditorPane.class
 com/projectwizard/core/ApplicationContext.class
 com/projectwizard/view/explorer/PackageExplorer.class
 com/projectwizard/view/templates/TemplatesView.class

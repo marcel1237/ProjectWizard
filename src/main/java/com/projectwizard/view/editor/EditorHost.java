@@ -1,48 +1,102 @@
 package com.projectwizard.view.editor;
 
+import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class EditorHost extends BorderPane {
 
-    private final TextArea editor;
-    private final Label titleLabel;
+    private final TabPane tabPane;
+    private final Map<String, Tab> openTabs = new LinkedHashMap<>();
+    private final StackPane emptyState;
 
     public EditorHost() {
-        titleLabel = new Label("No file selected");
-        titleLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
-        titleLabel.setStyle("-fx-text-fill: #666; -fx-padding: 5;");
+        tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
 
-        VBox titleBox = new VBox(titleLabel);
-        titleBox.setStyle("-fx-background-color: #f5f5f5; -fx-border-color: #ddd; "
-                + "-fx-border-width: 0 0 1 0;");
-        titleBox.setPadding(new Insets(5, 10, 5, 10));
+        Label hint = new Label("Double-click a file in the explorer to open it here.");
+        hint.setFont(Font.font("System", FontWeight.NORMAL, 13));
+        hint.setStyle("-fx-text-fill: #888;");
 
-        editor = new TextArea();
-        editor.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 12;");
-        editor.setWrapText(false);
-        editor.setEditable(false);
+        emptyState = new StackPane(hint);
+        emptyState.setPadding(new Insets(40));
+        emptyState.setStyle("-fx-background-color: #fafafa;");
 
-        setTop(titleBox);
-        setCenter(editor);
+        tabPane.getTabs().addListener((javafx.collections.ListChangeListener.Change<? extends Tab> change) -> {
+            while (change.next()) {
+                for (Tab removed : change.getRemoved()) {
+                    Object path = removed.getUserData();
+                    if (path instanceof String key) {
+                        openTabs.remove(key);
+                    }
+                }
+            }
+            emptyState.setVisible(tabPane.getTabs().isEmpty());
+        });
+
+        StackPane root = new StackPane(tabPane, emptyState);
+        setCenter(root);
     }
 
-    public void setTitle(String title) {
-        titleLabel.setText("📄 " + title);
-    }
+    public void openFile(File file) {
+        if (file == null || !file.isFile()) {
+            return;
+        }
 
-    public void setContent(String content) {
-        editor.setText(content != null ? content : "");
+        String path = file.getAbsolutePath();
+
+        if (openTabs.containsKey(path)) {
+            tabPane.getSelectionModel().select(openTabs.get(path));
+            return;
+        }
+
+        try {
+            String content = EditorSupport.readFileContent(file);
+            EditorPane pane = new EditorPane(file, content);
+
+            Tab tab = new Tab(pane.getTabLabel(), pane);
+            tab.setUserData(path);
+            tab.setOnClosed(e -> openTabs.remove(path));
+
+            openTabs.put(path, tab);
+            tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
+            emptyState.setVisible(false);
+
+        } catch (Exception e) {
+            TextArea error = new TextArea("❌ Error opening file:\n" + e.getMessage());
+            error.setEditable(true);
+            error.setStyle("-fx-font-family: 'Courier New'; -fx-text-fill: #c62828;");
+
+            Tab tab = new Tab(file.getName(), error);
+            tab.setUserData(path);
+            tab.setOnClosed(ev -> openTabs.remove(path));
+
+            openTabs.put(path, tab);
+            tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
+            emptyState.setVisible(false);
+        }
     }
 
     public void clear() {
-        editor.clear();
-        titleLabel.setText("No file selected");
+        tabPane.getTabs().clear();
+        openTabs.clear();
+        emptyState.setVisible(true);
+    }
+
+    public int getOpenTabCount() {
+        return openTabs.size();
     }
 
 }

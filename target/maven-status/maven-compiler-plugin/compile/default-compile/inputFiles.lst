@@ -22,6 +22,8 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/about/AboutView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/dashboard/DashboardView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/editor/EditorHost.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/editor/EditorPane.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/editor/EditorSupport.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/explorer/FileTreeCell.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/explorer/PackageExplorer.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/git/GitView.java
