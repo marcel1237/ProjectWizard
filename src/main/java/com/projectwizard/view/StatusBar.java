@@ -11,7 +11,7 @@ public class StatusBar extends HBox {
 
     public StatusBar() {
 
-        ApplicationContext context = new ApplicationContext();
+        ApplicationContext context = ApplicationContext.getInstance();
 
         Label status = new Label("Ready");
 

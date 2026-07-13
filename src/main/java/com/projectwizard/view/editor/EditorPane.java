@@ -1,32 +1,20 @@
 package com.projectwizard.view.editor;
 
 import java.io.File;
-
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 
 public class EditorPane extends BorderPane {
-
-    private final File file;
-    private final TextArea textArea;
+    private final TextArea editor = new TextArea();
+    private File currentFile;
 
     public EditorPane(File file, String content) {
-        this.file = file;
-
-        textArea = new TextArea(content != null ? content : "");
-        textArea.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 12;");
-        textArea.setWrapText(false);
-        textArea.setEditable(true);
-
-        setCenter(textArea);
+        this.currentFile = file;
+        editor.setText(content);
+        editor.setStyle("-fx-font-family: 'Consolas', 'Monospace'; -fx-font-size: 13px;");
+        setCenter(editor);
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public String getTabLabel() {
-        return file.getName();
-    }
-
+    public String getText() { return editor.getText(); }
+    public File getFile() { return currentFile; }
 }

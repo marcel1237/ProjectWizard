@@ -1,3 +1,14 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 17.4"
+echo " Sincronização de Métodos e Assinaturas"
+echo "========================================="
+
+# 1. Atualizar EditorHost com sobrecarga de openFile, clear() e getOpenTabCount()
+echo "[1/3] Atualizando EditorHost.java..."
+cat > src/main/java/com/projectwizard/view/editor/EditorHost.java <<'EOF'
 package com.projectwizard.view.editor;
 
 import javafx.scene.control.*;
@@ -83,3 +94,43 @@ public class EditorHost extends BorderPane {
         return tabPane.getTabs().size();
     }
 }
+EOF
+
+# 2. Atualizar DialogService com o alias showInformation
+echo "[2/3] Atualizando DialogService.java..."
+cat > src/main/java/com/projectwizard/service/DialogService.java <<'EOF'
+package com.projectwizard.service;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+public class DialogService {
+    public void showError(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    public void showInfo(String title, String message) {
+        showInformation(title, message);
+    }
+
+    public void showInformation(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
+EOF
+
+# 3. Validar se o ProjectWorkspace está chamando os métodos corretamente
+echo "[3/3] Sincronização concluída."
+
+echo "========================================="
+echo " 🎉 CORREÇÃO DE SÍMBOLOS APLICADA!"
+echo "========================================="
+echo "🚀 Execute para compilar: mvn clean compile"

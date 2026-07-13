@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 public class MainWindow {
 
     private final ApplicationContext context =
-            new ApplicationContext();
+            ApplicationContext.getInstance();
 
     public void show(Stage stage) {
 
