@@ -1,6 +1,9 @@
 com/projectwizard/App.class
 com/projectwizard/view/StatusBar.class
+com/projectwizard/service/git/GitService.class
+com/projectwizard/workspace/ProjectWorkspace.class
 com/projectwizard/view/explorer/FileTreeCell.class
+com/projectwizard/view/explorer/PackageExplorer$1.class
 com/projectwizard/view/projecttype/ProjectCard.class
 com/projectwizard/service/FileSystemService.class
 com/projectwizard/core/navigation/NavigationTarget.class
@@ -9,7 +12,10 @@ com/projectwizard/theme/ThemeManager.class
 com/projectwizard/service/ProjectService.class
 com/projectwizard/view/MainToolBar.class
 com/projectwizard/view/newproject/NewProjectView.class
+com/projectwizard/model/Project.class
 com/projectwizard/view/MainWindow.class
+com/projectwizard/workspace/ProjectHeader.class
+com/projectwizard/view/editor/EditorHost.class
 com/projectwizard/view/projecttype/ProjectTypeView.class
 com/projectwizard/core/navigation/NavigationController.class
 com/projectwizard/theme/ThemeManager$1.class

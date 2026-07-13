@@ -5,11 +5,13 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/core/Version.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/core/navigation/NavigationController.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/core/navigation/NavigationTarget.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/model/Project.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/DialogService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/FileSystemService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/NavigationService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/ProjectService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/SettingsService.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/git/GitService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/theme/ThemeManager.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/theme/ThemeType.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/MainToolBar.java
@@ -19,6 +21,7 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/WorkspacePane.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/about/AboutView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/dashboard/DashboardView.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/editor/EditorHost.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/explorer/FileTreeCell.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/explorer/PackageExplorer.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/git/GitView.java
@@ -30,3 +33,5 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/settings/SettingsView.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/sidebar/Sidebar.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/view/templates/TemplatesView.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/workspace/ProjectHeader.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/workspace/ProjectWorkspace.java

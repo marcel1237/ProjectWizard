@@ -8,6 +8,9 @@ import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
+import com.projectwizard.view.explorer.PackageExplorer;
+import com.projectwizard.view.explorer.FileTreeCell;
+
 public class OpenProjectView extends BorderPane {
 
     private final TextField pathField = new TextField();
@@ -19,6 +22,9 @@ public class OpenProjectView extends BorderPane {
     private final Button cancelButton = new Button("Cancel");
 
     private File selectedDirectory;
+
+    private final PackageExplorer explorer =
+            new PackageExplorer();
 
     public OpenProjectView() {
 
@@ -76,6 +82,10 @@ public class OpenProjectView extends BorderPane {
             if (dir != null) {
 
                 selectedDirectory = dir;
+
+                explorer.setCellFactory(v -> new FileTreeCell());
+
+                explorer.openProject(dir);
 
                 pathField.setText(
                         dir.getAbsolutePath()
@@ -147,7 +157,18 @@ public class OpenProjectView extends BorderPane {
                 buttons
         );
 
-        setCenter(center);
+        
+SplitPane split = new SplitPane();
+
+split.getItems().addAll(
+        explorer,
+        center
+);
+
+split.setDividerPositions(0.30);
+
+setCenter(split);
+
 
     }
 

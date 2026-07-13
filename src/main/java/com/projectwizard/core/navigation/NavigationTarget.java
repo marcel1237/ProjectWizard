@@ -1,7 +1,6 @@
 package com.projectwizard.core.navigation;
 
 public enum NavigationTarget {
-
     HOME,
     NEW_PROJECT,
     OPEN_PROJECT,
@@ -9,6 +8,6 @@ public enum NavigationTarget {
     GIT,
     GITHUB,
     SETTINGS,
-    ABOUT
-
+    ABOUT,
+    WORKSPACE
 }
