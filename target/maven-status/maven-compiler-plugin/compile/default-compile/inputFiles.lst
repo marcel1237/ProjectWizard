@@ -11,7 +11,7 @@
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/NavigationService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/ProjectService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/SettingsService.java
-/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+/home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/editor/JetBrainsSyntaxScanner.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/service/git/GitService.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/theme/ThemeManager.java
 /home/marcel1237/ProjectWizard/src/main/java/com/projectwizard/theme/ThemeType.java

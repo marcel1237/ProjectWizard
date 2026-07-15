@@ -1,0 +1,1 @@
+scripts=(); for f in create-file-with-all-*.sh; do [[ "$f" != *"sh-files.sh" ]] && scripts+=("$f"); done; total=${#scripts[@]}; for ((i=0; i<total; i++)); do f="${scripts[$i]}"; echo "Executando $((i+1)) de $total: $f"; ./"$f"; done

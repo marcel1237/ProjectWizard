@@ -12,7 +12,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
-import com.projectwizard.service.editor.JavaTokenScanner;
+import com.projectwizard.service.editor.JetBrainsSyntaxScanner;
 
 /**
  * EditorPane com Realce de Sintaxe Industrial.
@@ -23,7 +23,7 @@ public class EditorPane extends BorderPane {
     private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB
 
     private final CodeArea codeArea = new CodeArea();
-    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private final JetBrainsSyntaxScanner scanner = new JetBrainsSyntaxScanner();
     private File currentFile;
 
     public EditorPane(File file, String content) {

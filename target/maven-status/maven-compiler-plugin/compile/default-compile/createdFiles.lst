@@ -14,12 +14,12 @@ com/projectwizard/view/editor/EditorPane$1.class
 com/projectwizard/service/ProjectService.class
 com/projectwizard/view/MainToolBar.class
 com/projectwizard/view/newproject/NewProjectView.class
+com/projectwizard/service/editor/JetBrainsSyntaxScanner$TokenHandler.class
 com/projectwizard/model/Project.class
 com/projectwizard/view/MainWindow.class
 com/projectwizard/workspace/ProjectHeader.class
 com/projectwizard/view/editor/EditorHost.class
 com/projectwizard/view/projecttype/ProjectTypeView.class
-com/projectwizard/service/editor/JavaTokenScanner$TokenHandler.class
 com/projectwizard/core/navigation/NavigationController.class
 com/projectwizard/theme/ThemeManager$1.class
 com/projectwizard/core/Constants.class
@@ -33,8 +33,8 @@ com/projectwizard/view/openproject/OpenProjectView.class
 com/projectwizard/view/github/GitHubView.class
 com/projectwizard/theme/ThemeType.class
 com/projectwizard/view/git/GitView.class
-com/projectwizard/service/editor/JavaTokenScanner.class
 com/projectwizard/core/navigation/NavigationController$1.class
+com/projectwizard/service/editor/JetBrainsSyntaxScanner.class
 com/projectwizard/view/about/AboutView.class
 com/projectwizard/service/DialogService.class
 com/projectwizard/view/dashboard/DashboardView.class

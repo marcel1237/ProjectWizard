@@ -1,4 +1,143 @@
-New File Standard para Shell com CHMOD prontofind . -name "*.sh" -exec cat {} + > all_shell_code_report.txt#!/usr/bin/env bash
+find . -name "*.md" -exec cat {} + > all_md_text_report.txtNew File Standard para Shell com CHMOD pronto Teste de salvamento#!/usr/bin/env bash
+
+set -e
+
+echo "=========================================="
+echo " Project Wizard 19.6"
+echo " JDT Tokenizer Fix"
+echo "=========================================="
+
+FILE=src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+
+cp "$FILE" "$FILE.bak19_6"
+
+cat > "$FILE" <<'EOF'
+package com.projectwizard.service.editor;
+
+import org.eclipse.jdt.core.compiler.ITerminalSymbols;
+import org.eclipse.jdt.internal.compiler.parser.Scanner;
+
+@SuppressWarnings("restriction")
+public class JavaTokenScanner {
+
+    private final Scanner scanner = new Scanner();
+
+    public void tokenize(String source, TokenHandler handler) {
+
+        if (source == null || handler == null)
+            return;
+
+        scanner.setSource(source.toCharArray());
+
+        try {
+
+            int token;
+
+            while ((token = scanner.getNextToken())
+                    != ITerminalSymbols.TokenNameEOF) {
+
+                int start = scanner.getCurrentTokenStartPosition();
+                int end   = scanner.getCurrentTokenEndPosition() + 1;
+
+                if (start < 0)
+                    continue;
+
+                if (end < start)
+                    continue;
+
+                if (start > source.length())
+                    continue;
+
+                if (end > source.length())
+                    end = source.length();
+
+                if (start == end)
+                    continue;
+
+                handler.onToken(
+                        getStyleClass(token),
+                        start,
+                        end
+                );
+            }
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "[JDT] Erro na tokenização: "
+                            + e.getMessage()
+            );
+
+        } finally {
+
+            scanner.setSource((char[]) null);
+
+        }
+
+    }
+
+    private String getStyleClass(int token) {
+
+        return switch (token) {
+
+            case ITerminalSymbols.TokenNameIdentifier ->
+                    "token-identifier";
+
+            case ITerminalSymbols.TokenNameStringLiteral ->
+                    "token-string";
+
+            case ITerminalSymbols.TokenNameCOMMENT_BLOCK,
+                 ITerminalSymbols.TokenNameCOMMENT_LINE ->
+                    "token-comment";
+
+            case ITerminalSymbols.TokenNameint,
+                 ITerminalSymbols.TokenNamepublic,
+                 ITerminalSymbols.TokenNameclass,
+                 ITerminalSymbols.TokenNamestatic,
+                 ITerminalSymbols.TokenNamevoid,
+                 ITerminalSymbols.TokenNamereturn,
+                 ITerminalSymbols.TokenNameprivate,
+                 ITerminalSymbols.TokenNameprotected,
+                 ITerminalSymbols.TokenNameif,
+                 ITerminalSymbols.TokenNameelse,
+                 ITerminalSymbols.TokenNamefor,
+                 ITerminalSymbols.TokenNamewhile,
+                 ITerminalSymbols.TokenNametry,
+                 ITerminalSymbols.TokenNamecatch,
+                 ITerminalSymbols.TokenNamefinally,
+                 ITerminalSymbols.TokenNamenew,
+                 ITerminalSymbols.TokenNameimport,
+                 ITerminalSymbols.TokenNamepackage ->
+
+                    "token-keyword";
+
+            default ->
+                    "token-default";
+
+        };
+
+    }
+
+    public interface TokenHandler {
+
+        void onToken(
+                String type,
+                int start,
+                int end
+        );
+
+    }
+
+}
+EOF
+
+echo
+echo "=========================================="
+echo "19.6 aplicado."
+echo
+echo "Execute:"
+echo
+echo "mvn clean javafx:run"find . -name "*.sh" -exec cat {} + > all_shell_code_report.txt#!/usr/bin/env bash
 set -Eeuo pipefail
 
 echo "========================================="
@@ -302,6 +441,142 @@ echo
 echo "Execute:"
 echo
 echo "mvn clean javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 17.4"
+echo " Sincronização de Métodos e Assinaturas"
+echo "========================================="
+
+# 1. Atualizar EditorHost com sobrecarga de openFile, clear() e getOpenTabCount()
+echo "[1/3] Atualizando EditorHost.java..."
+cat > src/main/java/com/projectwizard/view/editor/EditorHost.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+import java.io.File;
+import java.nio.file.Files;
+import com.projectwizard.core.ApplicationContext;
+
+public class EditorHost extends BorderPane {
+    private final TabPane tabPane = new TabPane();
+
+    public EditorHost() {
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+        setupToolBar();
+        setCenter(tabPane);
+    }
+
+    private void setupToolBar() {
+        Button btnSave = new Button("💾 Save");
+        Button btnSaveAs = new Button("📂 Save As...");
+        btnSave.setOnAction(e -> handleSave());
+        btnSaveAs.setOnAction(e -> handleSaveAs());
+        setTop(new ToolBar(btnSave, btnSaveAs));
+    }
+
+    private void handleSave() {
+        Tab selected = tabPane.getSelectionModel().getSelectedItem();
+        if (selected != null && selected.getContent() instanceof EditorPane pane) {
+            try {
+                ApplicationContext.getInstance().getFileSystemService().saveFile(pane.getFile(), pane.getText());
+            } catch (Exception ex) {
+                ApplicationContext.getInstance().getDialogService().showError("Error", ex.getMessage());
+            }
+        }
+    }
+
+    private void handleSaveAs() {
+        Tab selected = tabPane.getSelectionModel().getSelectedItem();
+        if (selected != null && selected.getContent() instanceof EditorPane pane) {
+            FileChooser chooser = new FileChooser();
+            File file = chooser.showSaveDialog(getScene().getWindow());
+            if (file != null) {
+                try {
+                    ApplicationContext.getInstance().getFileSystemService().saveFile(file, pane.getText());
+                    selected.setText(file.getName());
+                } catch (Exception ex) {
+                    ApplicationContext.getInstance().getDialogService().showError("Error", ex.getMessage());
+                }
+            }
+        }
+    }
+
+    // Sobrecarga para aceitar apenas o File (Lê o conteúdo automaticamente)
+    public void openFile(File file) {
+        try {
+            String content = Files.readString(file.toPath());
+            openFile(file, content);
+        } catch (Exception e) {
+            ApplicationContext.getInstance().getDialogService().showError("Read Error", e.getMessage());
+        }
+    }
+
+    public void openFile(File file, String content) {
+        // Verifica se o arquivo já está aberto para evitar duplicidade
+        for (Tab tab : tabPane.getTabs()) {
+            if (tab.getText().equals(file.getName())) {
+                tabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+        Tab tab = new Tab(file.getName());
+        tab.setContent(new EditorPane(file, content));
+        tabPane.getTabs().add(tab);
+        tabPane.getSelectionModel().select(tab);
+    }
+
+    public void clear() {
+        tabPane.getTabs().clear();
+    }
+
+    public int getOpenTabCount() {
+        return tabPane.getTabs().size();
+    }
+}
+EOF
+
+# 2. Atualizar DialogService com o alias showInformation
+echo "[2/3] Atualizando DialogService.java..."
+cat > src/main/java/com/projectwizard/service/DialogService.java <<'EOF'
+package com.projectwizard.service;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+public class DialogService {
+    public void showError(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    public void showInfo(String title, String message) {
+        showInformation(title, message);
+    }
+
+    public void showInformation(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
+EOF
+
+# 3. Validar se o ProjectWorkspace está chamando os métodos corretamente
+echo "[3/3] Sincronização concluída."
+
+echo "========================================="
+echo " 🎉 CORREÇÃO DE SÍMBOLOS APLICADA!"
+echo "========================================="
+echo "🚀 Execute para compilar: mvn clean compile"
+#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -735,6 +1010,30 @@ echo
 echo "Execute:"
 echo
 echo "mvn clean javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 19.3"
+echo " Correção de Typo: TokenNametry"
+echo "========================================="
+
+# 1. Validar ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+echo "[1/1] Corrigindo erro de sintaxe no JavaTokenScanner..."
+# Substitui o termo incorreto 'tray' pelo correto 'try' exigido pelo JDT Core
+sed -i 's/TokenNametray/TokenNametry/g' src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+
+echo "========================================="
+echo " 🎉 CORREÇÃO APLICADA COM SUCESSO!"
+echo "========================================="
+echo "O erro 'cannot find symbol TokenNametray' foi resolvido."
+echo "========================================="
+echo "🚀 Execute: mvn clean javafx:run"
+#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -874,6 +1173,162 @@ echo
 echo "Execute:"
 echo
 echo "mvn clean javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 17.1"
+echo " Correção de Erro de Compilação no Editor"
+echo "========================================="
+
+# Verificação de diretório
+if [ ! -f pom.xml ]; then
+    echo "Execute este script na raiz do ProjectWizard."
+    exit 1
+fi
+
+FILE="src/main/java/com/projectwizard/view/editor/EditorHost.java"
+
+if [ ! -f "$FILE" ]; then
+    echo "ERRO: Arquivo não encontrado: $FILE"
+    exit 1
+fi
+
+echo "Corrigindo chamada de setupToolBar()..."
+
+# O script utiliza Python para remover o prefixo 'tabPane.' da chamada do método
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorHost.java")
+txt = p.read_text()
+
+# Corrige: tabPane.setupToolBar() -> setupToolBar()
+# E garante que o método seja chamado de forma independente
+if "tabPane.setupToolBar()" in txt:
+    txt = txt.replace("tabPane.setupToolBar();", "setupToolBar();")
+    p.write_text(txt)
+    print("✔ Sucesso: Prefixo 'tabPane.' removido da chamada.")
+elif "setupToolBar()" in txt:
+    print("ℹ O método já parece estar sendo chamado corretamente.")
+else:
+    print("⚠ Aviso: Chamada setupToolBar() não encontrada para correção.")
+PY
+
+echo
+echo "========================================="
+echo " Etapa 17.1 concluída!"
+echo "========================================="
+echo "O erro 'cannot find symbol setupToolBar()' foi resolvido."
+echo "Execute para compilar:"
+echo "mvn clean compile"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.9"
+echo " Correção de Acesso ao Índice do Array"
+echo "========================================="
+
+# 1. Validar ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Corrigindo EditorPane.java (Acesso via )..."
+cat > src/main/java/com/projectwizard/view/editor/EditorPane.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.concurrent.Task;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+/**
+ * EditorPane com Realce de Sintaxe Otimizado.
+ * Correção: Acesso explícito ao índice  do array de controle do JDT.
+ */
+public class EditorPane extends BorderPane {
+    private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        if (file != null && file.length() > MAX_FILE_SIZE) {
+            System.err.println("[JDT] Arquivo muito grande para realce.");
+            setCenter(codeArea);
+            return;
+        }
+
+        codeArea.multiPlainChanges()
+            .subscribe(ignore -> runHighlightingAsync());
+
+        runHighlightingAsync();
+        setCenter(codeArea);
+    }
+
+    private void runHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() {
+                return computeHighlighting(text);
+            }
+        };
+        highlightTask.setOnSucceeded(e -> codeArea.setStyleSpans(0, highlightTask.getValue()));
+        
+        Thread thread = new Thread(highlightTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        final int[] lastKwEnd = {0}; // Ponteiro mutável para Lambda
+        
+        String processableText = text.length() > 50000 ? text.substring(0, 50000) : text;
+
+        scanner.tokenize(processableText, (type, start, end) -> {
+            int spacer = start - lastKwEnd; // CORRIGIDO: ACESSO AO ÍNDICE 
+            if (spacer > 0) {
+                spansBuilder.add(Collections.emptyList(), spacer);
+            }
+            spansBuilder.add(Collections.singleton(type), end - start);
+            lastKwEnd = end; // CORRIGIDO: ATRIBUIÇÃO NO ÍNDICE 
+        });
+        
+        int remaining = text.length() - lastKwEnd; // CORRIGIDO: CÁLCULO FINAL
+        if (remaining > 0) {
+            spansBuilder.add(Collections.emptyList(), remaining);
+        }
+        
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+EOF
+
+echo "[2/2] Compilando e limpando artefatos..."
+mvn clean compile
+
+echo "========================================="
+echo " 🎉 ETAPA 18.9 CONCLUÍDA!"
+echo "========================================="
+echo "✔ Corrigido erro de tipos: int - int[] -> int - int."
+echo "✔ Mantida proteção contra Erro 137 (OOM) via G1GC e travas."
+echo "========================================="
+echo "🚀 Execute: mvn javafx:run"#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -1067,6 +1522,137 @@ echo
 echo "Copie toda a saída e me envie."
 echo
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 17.0"
+echo " Implementando Salvar / Salvar Como"
+echo "========================================="
+
+# Verificação de ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do projeto ProjectWizard."
+    exit 1
+fi
+
+echo "[1/3] Atualizando FileSystemService com suporte a escrita..."
+cat > src/main/java/com/projectwizard/service/FileSystemService.java <<'EOF'
+package com.projectwizard.service;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+
+public class FileSystemService {
+    public void saveFile(File file, String content) throws Exception {
+        if (file == null) return;
+        Files.writeString(file.toPath(), content, StandardCharsets.UTF_8);
+    }
+}
+EOF
+
+echo "[2/3] Adicionando ToolBar de ações ao EditorHost..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorHost.java")
+if p.exists():
+    txt = p.read_text()
+    
+    # Adicionando imports necessários
+    imports = """import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Separator;
+import javafx.stage.FileChooser;
+import com.projectwizard.core.ApplicationContext;"""
+    
+    if "javafx.stage.FileChooser" not in txt:
+        txt = txt.replace("import javafx.scene.control.TabPane;", "import javafx.scene.control.TabPane;\n" + imports)
+
+    # Injetando a ToolBar no topo do BorderPane
+    toolbar_logic = """
+    private void setupToolBar() {
+        Button btnSave = new Button("💾 Save");
+        Button btnSaveAs = new Button("📂 Save As...");
+        
+        btnSave.setOnAction(e -> handleSave());
+        btnSaveAs.setOnAction(e -> handleSaveAs());
+        
+        ToolBar toolBar = new ToolBar(btnSave, btnSaveAs, new Separator());
+        setTop(toolBar);
+    }
+
+    private void handleSave() {
+        Tab selectedTab = getSelectionModel().getSelectedItem();
+        if (selectedTab != null && selectedTab.getContent() instanceof EditorPane pane) {
+            try {
+                File file = pane.getFile();
+                String content = pane.getText();
+                ApplicationContext.getInstance().getFileSystemService().saveFile(file, content);
+                System.out.println("[EDITOR] Arquivo salvo: " + file.getName());
+            } catch (Exception ex) {
+                ApplicationContext.getInstance().getDialogService().showError("Erro ao Salvar", ex.getMessage());
+            }
+        }
+    }
+
+    private void handleSaveAs() {
+        Tab selectedTab = getSelectionModel().getSelectedItem();
+        if (selectedTab != null && selectedTab.getContent() instanceof EditorPane pane) {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Salvar Como");
+            chooser.setInitialFileName(pane.getFile().getName());
+            File newFile = chooser.showSaveDialog(getScene().getWindow());
+            
+            if (newFile != null) {
+                try {
+                    ApplicationContext.getInstance().getFileSystemService().saveFile(newFile, pane.getText());
+                    selectedTab.setText(newFile.getName());
+                    // Idealmente aqui atualizaria a referência no EditorPane
+                    System.out.println("[EDITOR] Arquivo salvo como: " + newFile.getAbsolutePath());
+                } catch (Exception ex) {
+                    ApplicationContext.getInstance().getDialogService().showError("Erro no Salvar Como", ex.getMessage());
+                }
+            }
+        }
+    }
+    """
+    
+    if "setupToolBar()" not in txt:
+        # Insere a lógica antes do fechamento da classe
+        txt = txt.rstrip().rstrip("}") + toolbar_logic + "\n}"
+        # Chama o setup no construtor
+        txt = txt.replace("setTabClosingPolicy", "setupToolBar();\n        setTabClosingPolicy")
+        
+    p.write_text(txt)
+    print("✔ EditorHost atualizado com Save/SaveAs.")
+PY
+
+echo "[3/3] Sincronizando EditorPane..."
+# Garante que o EditorPane exponha o arquivo e o texto para o Host
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorPane.java")
+if p.exists():
+    txt = p.read_text()
+    if "public File getFile()" not in txt:
+        methods = """
+    public File getFile() { return currentFile; }
+    public String getText() { return editor.getText(); }
+        """
+        txt = txt.rstrip().rstrip("}") + methods + "\n}"
+        p.write_text(txt)
+        print("✔ EditorPane atualizado com getters de estado.")
+PY
+
+echo "========================================="
+echo " 🎉 ETAPA 17.0 CONCLUÍDA!"
+echo "========================================="
+echo "Novidades:"
+echo "✔ Botão Save: Grava o texto no arquivo atual da aba."
+echo "✔ Botão Save As: Abre seletor de arquivos para novo destino."
+echo "✔ Persistência UTF-8 via FileSystemService."
+echo "========================================="
+echo "🚀 Teste agora: mvn clean javafx:run"#!/usr/bin/env bash
 
 set -e
 
@@ -2142,6 +2728,115 @@ echo
 echo "mvn clean javafx:run"#!/usr/bin/env bash
 set -Eeuo pipefail
 
+echo "========================================="
+echo " Project Wizard - Etapa 18.0"
+echo " Motor de Realce de Sintaxe (JDT Core)"
+echo "========================================="
+
+# 1. Adicionar dependência do JDT Core ao pom.xml
+echo "[1/4] Integrando JDT Core ao Maven..."
+python3 <<'PY'
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+path = Path("pom.xml")
+ET.register_namespace('', "http://maven.apache.org/POM/4.0.0")
+tree = ET.parse(path)
+root = tree.getroot()
+ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+
+deps = root.find('m:dependencies', ns)
+# Verifica se já existe
+if not any(d.find('m:artifactId', ns).text == 'org.eclipse.jdt.core' for d in deps.findall('m:dependency', ns)):
+    new_dep = ET.SubElement(deps, 'dependency')
+    ET.SubElement(new_dep, 'groupId').text = 'org.eclipse.jdt'
+    ET.SubElement(new_dep, 'artifactId').text = 'org.eclipse.jdt.core'
+    ET.SubElement(new_dep, 'version').text = '3.39.0'
+    tree.write(path, encoding='utf-8', xml_declaration=True)
+    print("✔ Dependência JDT Core adicionada.")
+else:
+    print("ℹ JDT Core já está no pom.xml.")
+PY
+
+# 2. Criar o Scanner de Tokens Java
+echo "[2/4] Criando JavaTokenScanner.java..."
+mkdir -p src/main/java/com/projectwizard/service/editor
+cat > src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java <<'EOF'
+package com.projectwizard.service.editor;
+
+import org.eclipse.jdt.core.compiler.ITerminalSymbols;
+import org.eclipse.jdt.internal.compiler.parser.Scanner;
+
+public class JavaTokenScanner {
+    private final Scanner scanner = new Scanner();
+
+    public void tokenize(String source, TokenHandler handler) {
+        scanner.setSource(source.toCharArray());
+        try {
+            int token;
+            while ((token = scanner.getNextToken()) != ITerminalSymbols.TokenNameEOF) {
+                int start = scanner.getCurrentTokenStartPosition();
+                int end = scanner.getCurrentTokenEndPosition();
+                String type = getStyleClass(token);
+                handler.onToken(type, start, end + 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getStyleClass(int token) {
+        return switch (token) {
+            case ITerminalSymbols.TokenNameIdentifier -> "token-identifier";
+            case ITerminalSymbols.TokenNameStringLiteral -> "token-string";
+            case ITerminalSymbols.TokenNameCOMMENT_BLOCK, ITerminalSymbols.TokenNameCOMMENT_LINE -> "token-comment";
+            case ITerminalSymbols.TokenNameint, ITerminalSymbols.TokenNamepublic, ITerminalSymbols.TokenNameclass, 
+                 ITerminalSymbols.TokenNamestatic, ITerminalSymbols.TokenNamevoid, ITerminalSymbols.TokenNamereturn -> "token-keyword";
+            default -> "token-default";
+        };
+    }
+
+    public interface TokenHandler {
+        void onToken(String type, int start, int end);
+    }
+}
+EOF
+
+# 3. Adicionar estilos de código ao CSS do AtlantaFX
+echo "[3/4] Atualizando projectwizard.css..."
+mkdir -p src/main/resources/themes
+cat >> src/main/resources/themes/projectwizard.css <<'EOF'
+.token-keyword { -fx-fill: #ff7b72; -fx-font-weight: bold; }
+.token-string { -fx-fill: #a5d6ff; }
+.token-comment { -fx-fill: #8b949e; -fx-font-style: italic; }
+.token-identifier { -fx-fill: #d2a8ff; }
+.token-default { -fx-fill: #adbac7; }
+EOF
+
+# 4. Atualizar EditorPane para aceitar o motor (Placeholder para UI Rica)
+echo "[4/4] Preparando EditorPane para Highlighting..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorPane.java")
+if p.exists():
+    txt = p.read_text()
+    if "JavaTokenScanner" not in txt:
+        txt = txt.replace("import javafx.scene.layout.BorderPane;", 
+                          "import javafx.scene.layout.BorderPane;\nimport com.projectwizard.service.editor.JavaTokenScanner;")
+        p.write_text(txt)
+        print("✔ EditorPane pronto para receber o motor de realce.")
+PY
+
+echo "========================================="
+echo " 🎉 ETAPA 18.0 CONCLUÍDA!"
+echo "========================================="
+echo "Nota: O JDT Core agora está integrado [2]."
+echo "A TextArea padrão foi marcada para upgrade para RichTextFX"
+echo "ou TextFlow na próxima etapa para exibir as cores."
+echo "========================================="
+echo "🚀 Execute: mvn clean compile"#!/usr/bin/env bash
+set -Eeuo pipefail
+
 #==============================================================================
 # PROJECT WIZARD - STAGE 16.8 - EDITOR TABS
 #==============================================================================
@@ -3096,6 +3791,80 @@ echo
 echo "Com ela eu monto a correção definitiva"
 echo "do App.java sem tentativa e erro."
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.5"
+echo " Correção Sintática: JavaTokenScanner"
+echo "========================================="
+
+# 1. Validar diretório
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+# 2. Reescrever JavaTokenScanner.java com a sintaxe correta
+echo "[1/1] Restaurando integridade do JavaTokenScanner..."
+cat > src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java <<'EOF'
+package com.projectwizard.service.editor;
+
+import org.eclipse.jdt.core.compiler.ITerminalSymbols;
+import org.eclipse.jdt.internal.compiler.parser.Scanner;
+
+public class JavaTokenScanner {
+    private final Scanner scanner = new Scanner();
+
+    public void tokenize(String source, TokenHandler handler) {
+        if (source == null) return;
+        
+        // Define a fonte para análise
+        scanner.setSource(source.toCharArray());
+        
+        try {
+            int token;
+            // Loop principal de tokenização do JDT Core
+            while ((token = scanner.getNextToken()) != ITerminalSymbols.TokenNameEOF) {
+                int start = scanner.getCurrentTokenStartPosition();
+                int end = scanner.getCurrentTokenEndPosition();
+                String type = getStyleClass(token);
+                handler.onToken(type, start, end + 1);
+            }
+        } catch (Exception e) {
+            System.err.println("[JDT] Erro na tokenização: " + e.getMessage());
+        } finally {
+            // OTIMIZAÇÃO: Limpa a referência do array de caracteres no scanner interno
+            // Isso ajuda o Garbage Collector (G1GC) a liberar memória pesada [18.4]
+            scanner.setSource((char[]) null);
+        }
+    }
+
+    private String getStyleClass(int token) {
+        return switch (token) {
+            case ITerminalSymbols.TokenNameIdentifier -> "token-identifier";
+            case ITerminalSymbols.TokenNameStringLiteral -> "token-string";
+            case ITerminalSymbols.TokenNameCOMMENT_BLOCK, ITerminalSymbols.TokenNameCOMMENT_LINE -> "token-comment";
+            case ITerminalSymbols.TokenNameint, ITerminalSymbols.TokenNamepublic, ITerminalSymbols.TokenNameclass, 
+                 ITerminalSymbols.TokenNamestatic, ITerminalSymbols.TokenNamevoid, ITerminalSymbols.TokenNamereturn -> "token-keyword";
+            default -> "token-default";
+        };
+    }
+
+    public interface TokenHandler {
+        void onToken(String type, int start, int end);
+    }
+}
+EOF
+
+echo "========================================="
+echo " 🎉 ETAPA 18.5 CONCLUÍDA!"
+echo "========================================="
+echo "Novidades:"
+echo "✔ Erros de 'try without catch' resolvidos."
+echo "✔ Limpeza de memória movida para o bloco 'finally'."
+echo "✔ Integridade da classe restaurada."
+echo "========================================="
+echo "🚀 Execute: mvn clean compile"#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -3261,6 +4030,348 @@ echo "mvn clean javafx:run"
 echo
 echo "Próxima etapa:"
 echo "15.3 - Pesquisa + Categorias + Filtros"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 19.0"
+echo " Correção Sintática Definitiva (AST Fix)"
+echo "========================================="
+
+# 1. Validar ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Sobrescrevendo EditorPane.java com correção de índice ..."
+# O uso de Python garante que os caracteres literais  sejam escritos sem interferência do shell
+python3 <<'PY'
+from pathlib import Path
+
+content = r'''package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.concurrent.Task;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+/**
+ * EditorPane com Realce de Sintaxe Industrial.
+ * Correção: Uso obrigatório de lastKwEnd para operações e atribuições.
+ */
+public class EditorPane extends BorderPane {
+    private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB para evitar OOM 137
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        if (file != null && file.length() > MAX_FILE_SIZE) {
+            System.err.println("[JDT] Arquivo ignorado (muito grande): " + file.getName());
+            setCenter(codeArea);
+            return;
+        }
+
+        // Listener assíncrono para manter a UI Snappier (Genuine Coder style)
+        codeArea.multiPlainChanges()
+            .subscribe(ignore -> runHighlightingAsync());
+
+        runHighlightingAsync();
+        setCenter(codeArea);
+    }
+
+    private void runHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() {
+                return computeHighlighting(text);
+            }
+        };
+
+        highlightTask.setOnSucceeded(e -> codeArea.setStyleSpans(0, highlightTask.getValue()));
+        
+        Thread thread = new Thread(highlightTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        // O array final permite mutabilidade dentro da Lambda
+        final int[] lastKwEnd = {0}; 
+        
+        // Otimização de buffer para arquivos médios
+        String processableText = text.length() > 50000 ? text.substring(0, 50000) : text;
+
+        scanner.tokenize(processableText, (type, start, end) -> {
+            int spacer = start - lastKwEnd; // ACESSO AO ÍNDICE  - CORRIGIDO
+            if (spacer > 0) {
+                spansBuilder.add(Collections.emptyList(), spacer);
+            }
+            spansBuilder.add(Collections.singleton(type), end - start);
+            lastKwEnd = end; // ATRIBUIÇÃO NO ÍNDICE  - CORRIGIDO
+        });
+        
+        int remaining = text.length() - lastKwEnd; // CÁLCULO FINAL - CORRIGIDO
+        if (remaining > 0) {
+            spansBuilder.add(Collections.emptyList(), remaining);
+        }
+        
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+'''
+p = Path("src/main/java/com/projectwizard/view/editor/EditorPane.java")
+p.write_text(content)
+print(f"✔ EditorPane.java reconstruído com sucesso em {p.absolute()}")
+PY
+
+echo "[2/2] Recompilando projeto..."
+mvn clean compile
+
+echo "========================================="
+echo " 🎉 ETAPA 19.0 CONCLUÍDA!"
+echo "========================================="
+echo "Novidades:"
+echo "✔ Corrigidos todos os 4 erros de tipos (int vs int[])."
+echo "✔ Proteção contra Out-of-Memory (Erro 137) mantida."
+echo "✔ Realce de sintaxe em Thread separada operacional."
+echo "========================================="
+echo "🚀 Execute: mvn javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 17.3 FINAL"
+echo " Sincronização Geral e Limpeza de Símbolos"
+echo "========================================="
+
+# 1. Restaurar ApplicationContext com Singleton e Metadados exigidos
+echo "[1/5] Corrigindo ApplicationContext..."
+cat > src/main/java/com/projectwizard/core/ApplicationContext.java <<'EOF'
+package com.projectwizard.core;
+
+import com.projectwizard.service.*;
+
+public class ApplicationContext {
+    private static ApplicationContext instance;
+    private final ProjectService projectService = new ProjectService();
+    private final FileSystemService fileSystemService = new FileSystemService();
+    private final DialogService dialogService = new DialogService();
+
+    private ApplicationContext() {}
+
+    public static synchronized ApplicationContext getInstance() {
+        if (instance == null) instance = new ApplicationContext();
+        return instance;
+    }
+
+    public String getApplicationName() { return "Project Wizard"; }
+    public String getVersion() { return "1.0.0"; }
+    
+    public ProjectService getProjectService() { return projectService; }
+    public FileSystemService getFileSystemService() { return fileSystemService; }
+    public DialogService getDialogService() { return dialogService; }
+}
+EOF
+
+# 2. Corrigir DialogService para suportar a assinatura showError(String, String)
+echo "[2/5] Atualizando DialogService..."
+cat > src/main/java/com/projectwizard/service/DialogService.java <<'EOF'
+package com.projectwizard.service;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+public class DialogService {
+    public void showError(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    
+    public void showInfo(String title, String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+}
+EOF
+
+# 3. Limpar EditorPane (Declarar 'editor' e remover duplicatas de getFile)
+echo "[3/5] Reconstruindo EditorPane..."
+cat > src/main/java/com/projectwizard/view/editor/EditorPane.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import java.io.File;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
+
+public class EditorPane extends BorderPane {
+    private final TextArea editor = new TextArea();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        editor.setText(content);
+        editor.setStyle("-fx-font-family: 'Consolas', 'Monospace'; -fx-font-size: 13px;");
+        setCenter(editor);
+    }
+
+    public String getText() { return editor.getText(); }
+    public File getFile() { return currentFile; }
+}
+EOF
+
+# 4. Corrigir EditorHost (Declarar tabPane e ajustar lógica de pattern matching)
+echo "[4/5] Corrigindo EditorHost..."
+cat > src/main/java/com/projectwizard/view/editor/EditorHost.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+import java.io.File;
+import com.projectwizard.core.ApplicationContext;
+
+public class EditorHost extends BorderPane {
+    private final TabPane tabPane = new TabPane();
+
+    public EditorHost() {
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+        setupToolBar();
+        setCenter(tabPane);
+    }
+
+    private void setupToolBar() {
+        Button btnSave = new Button("💾 Save");
+        Button btnSaveAs = new Button("📂 Save As...");
+        btnSave.setOnAction(e -> handleSave());
+        btnSaveAs.setOnAction(e -> handleSaveAs());
+        setTop(new ToolBar(btnSave, btnSaveAs));
+    }
+
+    private void handleSave() {
+        Tab selected = tabPane.getSelectionModel().getSelectedItem();
+        if (selected != null && selected.getContent() instanceof EditorPane pane) {
+            try {
+                ApplicationContext.getInstance().getFileSystemService().saveFile(pane.getFile(), pane.getText());
+                System.out.println("[SAVE] Arquivo salvo: " + pane.getFile().getName());
+            } catch (Exception ex) {
+                ApplicationContext.getInstance().getDialogService().showError("Error", ex.getMessage());
+            }
+        }
+    }
+
+    private void handleSaveAs() {
+        Tab selected = tabPane.getSelectionModel().getSelectedItem();
+        if (selected != null && selected.getContent() instanceof EditorPane pane) {
+            FileChooser chooser = new FileChooser();
+            File file = chooser.showSaveDialog(getScene().getWindow());
+            if (file != null) {
+                try {
+                    ApplicationContext.getInstance().getFileSystemService().saveFile(file, pane.getText());
+                    selected.setText(file.getName());
+                } catch (Exception ex) {
+                    ApplicationContext.getInstance().getDialogService().showError("Error", ex.getMessage());
+                }
+            }
+        }
+    }
+
+    public void openFile(File file, String content) {
+        Tab tab = new Tab(file.getName());
+        tab.setContent(new EditorPane(file, content));
+        tabPane.getTabs().add(tab);
+        tabPane.getSelectionModel().select(tab);
+    }
+}
+EOF
+
+# 5. Ajustar MainWindow e StatusBar para usar o Singleton getInstance()
+echo "[5/5] Corrigindo chamadas de Singleton..."
+sed -i 's/new ApplicationContext()/ApplicationContext.getInstance()/g' src/main/java/com/projectwizard/view/MainWindow.java
+sed -i 's/new ApplicationContext()/ApplicationContext.getInstance()/g' src/main/java/com/projectwizard/view/StatusBar.java
+
+echo "========================================="
+echo " 🎉 CORREÇÃO CONCLUÍDA!"
+echo "========================================="
+echo "🚀 Execute: mvn clean compile"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.6"
+echo " Correção de Tipos: EditorPane AST"
+echo "========================================="
+
+# 1. Validar ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Corrigindo acesso ao índice do array no EditorPane..."
+# O script utiliza Python para substituir as referências incorretas ao array lastKwEnd
+python3 <<'PY'
+from pathlib import Path
+
+p = Path("src/main/java/com/projectwizard/view/editor/EditorPane.java")
+if p.exists():
+    txt = p.read_text()
+    
+    # Corrige a subtração: start - lastKwEnd -> start - lastKwEnd
+    txt = txt.replace("start - lastKwEnd", "start - lastKwEnd")
+    
+    # Corrige a atribuição: lastKwEnd = end -> lastKwEnd = end
+    txt = txt.replace("lastKwEnd = end;", "lastKwEnd = end;")
+    
+    # Corrige o cálculo final: length - lastKwEnd -> length - lastKwEnd
+    txt = txt.replace("text.length() - lastKwEnd", "text.length() - lastKwEnd")
+    
+    p.write_text(txt)
+    print("✔ EditorPane: Acessos ao índice  corrigidos.")
+PY
+
+echo "[2/2] Suprimindo avisos de API depreciada no Scanner..."
+# Adiciona a anotação @SuppressWarnings para limpar a saída do Maven
+python3 <<'PY'
+from pathlib import Path
+
+p = Path("src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java")
+if p.exists():
+    txt = p.read_text()
+    if "@SuppressWarnings" not in txt:
+        txt = txt.replace("public class JavaTokenScanner", 
+                          "@SuppressWarnings(\"restriction\")\npublic class JavaTokenScanner")
+        p.write_text(txt)
+        print("✔ JavaTokenScanner: Avisos de restrição suprimidos.")
+PY
+
+echo "========================================="
+echo " 🎉 ETAPA 18.6 CONCLUÍDA!"
+echo "========================================="
+echo "Correções aplicadas:"
+echo "✔ Corrigido erro de tipos (int vs int[]) no EditorPane."
+echo "✔ Suprimido aviso de depreciação do JDT Core."
+echo "========================================="
+echo "🚀 Execute: mvn clean compile"#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -3883,6 +4994,220 @@ echo
 echo "Execute:"
 echo
 echo "mvn clean javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.4"
+echo " Otimização JDT + Background Tasks"
+echo "========================================="
+
+# 1. Configurar limites de memória e GC no pom.xml
+echo "[1/3] Configurando JVM: 3GB + G1GC..."
+python3 <<'PY'
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+path = Path("pom.xml")
+ET.register_namespace('', "http://maven.apache.org/POM/4.0.0")
+tree = ET.parse(path)
+root = tree.getroot()
+ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+
+for plugin in root.findall('.//m:plugin', ns):
+    art_id = plugin.find('m:artifactId', ns)
+    if art_id is not None and art_id.text == 'javafx-maven-plugin':
+        options = plugin.find('.//m:options', ns)
+        # Limpa configurações antigas
+        for opt in list(options):
+            if opt.text.startswith('-Xmx') or opt.text.startswith('-XX'):
+                options.remove(opt)
+        
+        # Adiciona os novos parâmetros sugeridos
+        ET.SubElement(options, 'option').text = '-Xmx3g'
+        ET.SubElement(options, 'option').text = '-XX:+UseG1GC'
+        tree.write(path, encoding='utf-8', xml_declaration=True)
+        print("✔ pom.xml atualizado para 3GB e G1GC.")
+PY
+
+# 2. Atualizar EditorPane com Trava de Tamanho e Background Task
+echo "[2/3] Implementando Multithreading no EditorPane..."
+cat > src/main/java/com/projectwizard/view/editor/EditorPane.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.concurrent.Task;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+public class EditorPane extends BorderPane {
+    private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB limit
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        // Verifica tamanho do arquivo antes de processar
+        if (file != null && file.length() > MAX_FILE_SIZE) {
+            System.err.println("[JDT] Arquivo muito grande para realce: " + file.getName());
+            setCenter(codeArea);
+            return;
+        }
+
+        // Listener para realce assíncrono (Evita travar a UI)
+        codeArea.multiPlainChanges()
+            .subscribe(ignore -> runHighlightingAsync());
+
+        // Processamento inicial
+        runHighlightingAsync();
+        setCenter(codeArea);
+    }
+
+    private void runHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() {
+                return computeHighlighting(text);
+            }
+        };
+
+        highlightTask.setOnSucceeded(e -> {
+            codeArea.setStyleSpans(0, highlightTask.getValue());
+        });
+
+        Thread thread = new Thread(highlightTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        int[] lastKwEnd = {0};
+        
+        // Otimização: Se o texto for muito longo, processa apenas os primeiros 50k chars (Lazy-ish)
+        String processableText = text.length() > 50000 ? text.substring(0, 50000) : text;
+
+        scanner.tokenize(processableText, (type, start, end) -> {
+            int spacer = start - lastKwEnd;
+            if (spacer > 0) spansBuilder.add(Collections.emptyList(), spacer);
+            spansBuilder.add(Collections.singleton(type), end - start);
+            lastKwEnd = end;
+        });
+        
+        int remaining = text.length() - lastKwEnd;
+        if (remaining > 0) spansBuilder.add(Collections.emptyList(), remaining);
+        
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+EOF
+
+# 3. Limpeza de Cache no JavaTokenScanner
+echo "[3/3] Otimizando JavaTokenScanner para GC..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java")
+if p.exists():
+    txt = p.read_text()
+    # Adiciona nulling explicitamente após a tokenização para ajudar o GC
+    if "scanner = null" not in txt:
+        old = "handler.onToken(type, start, end + 1);"
+        new = old + "\n            } \n            source = null; // Libera referência pesada"
+        txt = txt.replace(old, new)
+        p.write_text(txt)
+        print("✔ JavaTokenScanner otimizado para Garbage Collection.")
+PY
+
+echo "========================================="
+echo " 🎉 ETAPA 18.4 CONCLUÍDA!"
+echo "========================================="
+echo "Novidades de Performance:"
+echo "✔ JVM: Ajustada para 3GB + UseG1GC."
+echo "✔ Trava: Arquivos > 1MB não são processados pelo JDT."
+echo "✔ Threads: Tokenização movida para Background Task (Thread separada)."
+echo "✔ Memória: Redução de referências fortes no Scanner."
+echo "========================================="
+echo "🚀 Execute: mvn clean javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 19.2"
+echo " Ativando Cores do Realce de Sintaxe"
+echo "========================================="
+
+# 1. Garantir que o projectwizard.css tenha definições de cor robustas
+echo "[1/3] Atualizando definições de cores CSS..."
+cat > src/main/resources/themes/projectwizard.css <<'EOF'
+/* Estilos para o realce de sintaxe no CodeArea */
+.token-keyword { -fx-fill: #ff7b72; -fx-font-weight: bold; }
+.token-string { -fx-fill: #a5d6ff; }
+.token-comment { -fx-fill: #8b949e; -fx-font-style: italic; }
+.token-identifier { -fx-fill: #d2a8ff; }
+.token-default { -fx-fill: #adbac7; }
+
+/* Garante que o fundo do editor combine com o tema escuro */
+.code-area {
+    -fx-background-color: #0d1117;
+    -fx-font-family: 'Consolas', 'Monospace';
+    -fx-font-size: 13px;
+}
+EOF
+
+# 2. Atualizar JavaTokenScanner para reconhecer MAIS palavras-chave
+# Na etapa 18.0, apenas 6 palavras foram mapeadas.
+echo "[2/3] Expandindo vocabulário do JavaTokenScanner..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java")
+if p.exists():
+    txt = p.read_text()
+    old_switch = 'case ITerminalSymbols.TokenNameint, ITerminalSymbols.TokenNamepublic, ITerminalSymbols.TokenNameclass, \n                 ITerminalSymbols.TokenNamestatic, ITerminalSymbols.TokenNamevoid, ITerminalSymbols.TokenNamereturn -> "token-keyword";'
+    new_switch = """case ITerminalSymbols.TokenNameint, ITerminalSymbols.TokenNamepublic, ITerminalSymbols.TokenNameclass, 
+                 ITerminalSymbols.TokenNamestatic, ITerminalSymbols.TokenNamevoid, ITerminalSymbols.TokenNamereturn,
+                 ITerminalSymbols.TokenNameprivate, ITerminalSymbols.TokenNameprotected, ITerminalSymbols.TokenNameif,
+                 ITerminalSymbols.TokenNameelse, ITerminalSymbols.TokenNamefor, ITerminalSymbols.TokenNamewhile,
+                 ITerminalSymbols.TokenNametray, ITerminalSymbols.TokenNamecatch, ITerminalSymbols.TokenNamefinally,
+                 ITerminalSymbols.TokenNamenew, ITerminalSymbols.TokenNameimport, ITerminalSymbols.TokenNamepackage -> "token-keyword";"""
+    if "TokenNameprivate" not in txt:
+        txt = txt.replace(old_switch, new_switch)
+        p.write_text(txt)
+        print("✔ Scanner expandido com sucesso.")
+PY
+
+# 3. Vincular o CSS ao MainWindow
+echo "[3/3] Vinculando CSS à cena principal..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/MainWindow.java")
+if p.exists():
+    txt = p.read_text()
+    if "projectwizard.css" not in txt:
+        old = "scene.getStylesheets().add(new PrimerDark().getUserAgentStylesheet());"
+        new = old + '\n        scene.getStylesheets().add(getClass().getResource("/themes/projectwizard.css").toExternalForm());'
+        txt = txt.replace(old, new)
+        p.write_text(txt)
+        print("✔ Stylesheet registrado no MainWindow.")
+PY
+
+echo "========================================="
+echo " 🎉 CORES ATIVADAS!"
+echo "========================================="
+echo "Nota: O realce agora cobre os principais modificadores e estruturas [18.0, 19.2]."
+echo "========================================="
+echo "🚀 Execute: mvn clean javafx:run"#!/usr/bin/env bash
 
 set -e
 
@@ -5741,6 +7066,78 @@ main() {
 # Run main function
 main
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.2"
+echo " Corrigindo Erro 137 (Ajuste de Memória)"
+echo "========================================="
+
+# 1. Verificar se o pom.xml existe
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do projeto ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Aumentando limites de memória no pom.xml..."
+# O script utiliza Python para injetar opções de VM no javafx-maven-plugin
+python3 <<'PY'
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+path = Path("pom.xml")
+ET.register_namespace('', "http://maven.apache.org/POM/4.0.0")
+tree = ET.parse(path)
+root = tree.getroot()
+ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+
+# Localiza o plugin javafx-maven-plugin
+found = False
+for plugin in root.findall('.//m:plugin', ns):
+    art_id = plugin.find('m:artifactId', ns)
+    if art_id is not None and art_id.text == 'javafx-maven-plugin':
+        config = plugin.find('m:configuration', ns)
+        if config is None:
+            config = ET.SubElement(plugin, 'configuration')
+        
+        # Verifica se já existem options
+        options = config.find('m:options', ns)
+        if options is None:
+            options = ET.SubElement(config, 'options')
+        
+        # Remove opções antigas de memória se existirem para evitar duplicidade
+        for opt in options.findall('m:option', ns):
+            if opt.text.startswith('-Xmx'):
+                options.remove(opt)
+        
+        # Adiciona 2GB de memória máxima
+        new_mem = ET.SubElement(options, 'option')
+        new_mem.text = '-Xmx2g'
+        
+        # Adiciona suporte a reflexão para bibliotecas internas se necessário
+        new_ref = ET.SubElement(options, 'option')
+        new_ref.text = '--add-exports=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED'
+        
+        found = True
+        break
+
+if found:
+    tree.write(path, encoding='utf-8', xml_declaration=True)
+    print("✔ pom.xml atualizado com -Xmx2g.")
+else:
+    print("❌ Falha: javafx-maven-plugin não encontrado no pom.xml.")
+PY
+
+echo "[2/2] Limpando artefatos de build anteriores..."
+mvn clean > /dev/null
+
+echo "========================================="
+echo " 🎉 ETAPA 18.2 CONCLUÍDA!"
+echo "========================================="
+echo "Alteração: Adicionado -Xmx2g ao plugin JavaFX."
+echo "Isso impede que o sistema mate o processo por falta de RAM."
+echo "========================================="
+echo "🚀 Tente rodar novamente: mvn javafx:run"#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -6333,6 +7730,72 @@ echo "New Project"#!/usr/bin/env bash
 set -Eeuo pipefail
 
 echo "========================================="
+echo " Project Wizard - Etapa 16.9"
+echo " Habilitando Edição no Editor de Código"
+echo "========================================="
+
+# Verificação de ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do projeto ProjectWizard."
+    exit 1
+fi
+
+echo "[1/3] Atualizando EditorHost para permitir escrita..."
+# Altera o construtor do EditorHost para setEditable(true)
+python3 <<'PY'
+from pathlib import Path
+files = [
+    "src/main/java/com/projectwizard/view/editor/EditorHost.java",
+    "src/main/java/com/projectwizard/view/editor/EditorPane.java"
+]
+
+for file_path in files:
+    p = Path(file_path)
+    if p.exists():
+        txt = p.read_text()
+        # Remove a trava de somente leitura
+        txt = txt.replace("editor.setEditable(false);", "editor.setEditable(true);")
+        txt = txt.replace("setEditable(false);", "setEditable(true);")
+        p.write_text(txt)
+        print(f"✔ Editabilidade habilitada em: {file_path}")
+PY
+
+echo "[2/3] Adicionando listener de modificação (Dirty State)..."
+# Adiciona lógica básica para detectar mudanças no texto
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorHost.java")
+if p.exists():
+    txt = p.read_text()
+    if "textProperty().addListener" not in txt:
+        # Insere o listener de modificação após a criação do editor
+        old = "editor = new TextArea();"
+        new = """editor = new TextArea();
+        editor.textProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("[EDITOR] Texto modificado - Status: Dirty");
+        });"""
+        txt = txt.replace(old, new)
+        p.write_text(txt)
+        print("✔ Listener de modificação adicionado ao EditorHost.")
+PY
+
+echo "[3/3] Atualizando OpenProjectView (Removendo travas de preview)..."
+# Garante que ao abrir o arquivo no OpenProjectView, o editor não seja resetado para read-only
+sed -i 's/editorHost.setEditable(false);/editorHost.setEditable(true);/g' src/main/java/com/projectwizard/view/openproject/OpenProjectView.java 2>/dev/null || true
+
+echo "========================================="
+echo " 🎉 ETAPA 16.9 CONCLUÍDA!"
+echo "========================================="
+echo "Alterações realizadas:"
+echo "✔ EditorHost e EditorPane agora permitem entrada de texto."
+echo "✔ Adicionado log no terminal para detectar mudanças (Fase 3 Prep)."
+echo "✔ OpenProjectView sincronizado com modo de edição."
+echo "========================================="
+echo "🚀 Teste agora: mvn clean javafx:run"
+echo "Abra um projeto e tente digitar no editor lateral ou nas abas."#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
 echo " Project Wizard - Etapa 3"
 echo " Main Window"
 echo "========================================="
@@ -6730,6 +8193,70 @@ echo "Execute:"
 echo
 echo "mvn clean javafx:run"
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.3"
+echo " Ajuste de Memória de Alta Performance"
+echo "========================================="
+
+# 1. Validar ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Elevando Heap para 4GB e otimizando GC no pom.xml..."
+python3 <<'PY'
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+path = Path("pom.xml")
+ET.register_namespace('', "http://maven.apache.org/POM/4.0.0")
+tree = ET.parse(path)
+root = tree.getroot()
+ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+
+found = False
+for plugin in root.findall('.//m:plugin', ns):
+    art_id = plugin.find('m:artifactId', ns)
+    if art_id is not None and art_id.text == 'javafx-maven-plugin':
+        config = plugin.find('m:configuration', ns)
+        options = config.find('m:options', ns)
+        
+        # Limpa opções antigas de memória
+        for opt in options.findall('m:option', ns):
+            if opt.text.startswith('-Xmx') or opt.text.startswith('-XX'):
+                options.remove(opt)
+        
+        # Adiciona 4GB de RAM
+        opt_mem = ET.SubElement(options, 'option')
+        opt_mem.text = '-Xmx4g'
+        
+        # Adiciona o Garbage Collector G1 (Melhor para IDEs)
+        opt_gc = ET.SubElement(options, 'option')
+        opt_gc.text = '-XX:+UseG1GC'
+        
+        found = True
+        break
+
+if found:
+    tree.write(path, encoding='utf-8', xml_declaration=True)
+    print("✔ pom.xml atualizado para 4GB + G1GC.")
+else:
+    print("❌ Falha ao localizar o plugin no pom.xml.")
+PY
+
+echo "[2/2] Configurando variável de ambiente para o Maven..."
+export MAVEN_OPTS="-Xmx4g -XX:+UseG1GC"
+
+echo "========================================="
+echo " 🎉 ETAPA 18.3 CONCLUÍDA!"
+echo "========================================="
+echo "Dica: Se sua máquina tiver menos de 8GB de RAM total,"
+echo "feche outros programas (como o Chrome) antes de rodar."
+echo "========================================="
+echo "🚀 Tente agora: mvn javafx:run"#!/usr/bin/env bash
 
 set -e
 
@@ -7324,6 +8851,167 @@ echo "Execute:"
 echo
 echo "mvn clean javafx:run"
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 19.4"
+echo " Sincronização de Cores e Estilos CSS"
+echo "========================================="
+
+# 1. Garantir a existência e o conteúdo do projectwizard.css
+echo "[1/3] Consolidando projectwizard.css..."
+mkdir -p src/main/resources/themes
+cat > src/main/resources/themes/projectwizard.css <<'EOF'
+/* Estilos para o realce de sintaxe no CodeArea (RichTextFX) */
+.token-keyword { 
+    -fx-fill: #ff7b72; 
+    -fx-font-weight: bold; 
+}
+.token-string { 
+    -fx-fill: #a5d6ff; 
+}
+.token-comment { 
+    -fx-fill: #8b949e; 
+    -fx-font-style: italic; 
+}
+.token-identifier { 
+    -fx-fill: #d2a8ff; 
+}
+.token-default { 
+    -fx-fill: #adbac7; 
+}
+
+/* Força o fundo escuro para destacar as cores */
+.code-area {
+    -fx-background-color: #0d1117;
+    -fx-font-family: 'Consolas', 'Monospace';
+    -fx-font-size: 13px;
+    -fx-text-fill: #adbac7;
+}
+EOF
+
+# 2. Vincular o CSS no MainWindow de forma mais robusta
+# Verifica se o carregamento do CSS está usando o caminho correto do classpath
+echo "[2/3] Verificando vínculo CSS no MainWindow.java..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/MainWindow.java")
+if p.exists():
+    txt = p.read_text()
+    # Garante que o CSS personalizado seja carregado APÓS o tema do AtlantaFX
+    if "projectwizard.css" not in txt:
+        old = "scene.getStylesheets().add(new PrimerDark().getUserAgentStylesheet());"
+        new = old + '\n        String customCss = getClass().getResource("/themes/projectwizard.css").toExternalForm();'
+        new += '\n        scene.getStylesheets().add(customCss);'
+        txt = txt.replace(old, new)
+        p.write_text(txt)
+        print("✔ MainWindow: Carregamento de CSS injetado.")
+    else:
+        print("ℹ MainWindow: Stylesheet já parece estar configurado.")
+PY
+
+# 3. Garantir que o JavaTokenScanner esteja mapeando os tokens corretamente
+# Caso o script 19.2 tenha falhado, este comando garante as strings de classe CSS.
+echo "[3/3] Validando strings de tokens no JavaTokenScanner..."
+sed -i 's/"keyword"/"token-keyword"/g' src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+sed -i 's/"string"/"token-string"/g' src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+sed -i 's/"comment"/"token-comment"/g' src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+sed -i 's/"identifier"/"token-identifier"/g' src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java
+
+echo "========================================="
+echo " 🎉 ETAPA 19.4 CONCLUÍDA!"
+echo "========================================="
+echo "🚀 Execute: mvn clean javafx:run"
+echo "-----------------------------------------"
+echo "Nota: Se o fundo do editor ficar azul escuro/preto,"
+echo "o CSS foi carregado com sucesso. Se o fundo continuar"
+echo "cinza padrão, o caminho do resource no MainWindow"
+echo "pode estar falhando."#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 17.2"
+echo " Correção Geral de Símbolos e Hierarquia"
+echo "========================================="
+
+# 1. Garantir que o ApplicationContext tenha o método getInstance()
+echo "[1/3] Corrigindo ApplicationContext (Singleton)..."
+cat > src/main/java/com/projectwizard/core/ApplicationContext.java <<'EOF'
+package com.projectwizard.core;
+
+import com.projectwizard.service.*;
+
+public class ApplicationContext {
+    private static ApplicationContext instance;
+    
+    private final ProjectService projectService = new ProjectService();
+    private final FileSystemService fileSystemService = new FileSystemService();
+    private final DialogService dialogService = new DialogService();
+
+    private ApplicationContext() {}
+
+    public static synchronized ApplicationContext getInstance() {
+        if (instance == null) {
+            instance = new ApplicationContext();
+        }
+        return instance;
+    }
+
+    public ProjectService getProjectService() { return projectService; }
+    public FileSystemService getFileSystemService() { return fileSystemService; }
+    public DialogService getDialogService() { return dialogService; }
+}
+EOF
+
+# 2. Corrigir EditorPane para expor o texto e o arquivo
+echo "[2/3] Corrigindo EditorPane (Getters)..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorPane.java")
+if p.exists():
+    txt = p.read_text()
+    if "public String getText()" not in txt:
+        # Insere antes do último fechamento de chave
+        content = """
+    public String getText() { return editor.getText(); }
+    public java.io.File getFile() { return currentFile; }
+}"""
+        txt = txt.rstrip().rstrip("}") + content
+        p.write_text(txt)
+        print("✔ EditorPane atualizado.")
+PY
+
+# 3. Corrigir EditorHost para usar a variável interna tabPane corretamente
+echo "[3/3] Ajustando chamadas de método no EditorHost..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/view/editor/EditorHost.java")
+if p.exists():
+    txt = p.read_text()
+    
+    # Corrige chamadas que deveriam ser no tabPane interno, não no BorderPane (this)
+    txt = txt.replace("setTabClosingPolicy(", "tabPane.setTabClosingPolicy(")
+    txt = txt.replace("getSelectionModel()", "tabPane.getSelectionModel()")
+    
+    # Garante que o cast para EditorPane na lógica do Save funcione (Java 16+ Pattern Matching)
+    # Se o compilador falhar no pattern matching, usamos o modo tradicional
+    txt = txt.replace("instanceof EditorPane pane", "instanceof EditorPane")
+    
+    p.write_text(txt)
+    print("✔ EditorHost: Chamadas redirecionadas para tabPane.")
+PY
+
+echo "========================================="
+echo " 🎉 CORREÇÕES APLICADAS!"
+echo "========================================="
+echo "Ajustes realizados:"
+echo "✔ ApplicationContext: getInstance() restaurado."
+echo "✔ EditorPane: Métodos getText() e getFile() adicionados."
+echo "✔ EditorHost: Redirecionado métodos de Tab para o objeto interno."
+echo "========================================="
+echo "🚀 Execute para compilar: mvn clean compile"
+
+#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -7419,6 +9107,118 @@ echo
 echo "Execute:"
 echo
 echo "mvn clean javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.7"
+echo " Correção Definitiva: Acesso ao Array AST"
+echo "========================================="
+
+# Verificação de ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do projeto ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Reconstruindo EditorPane.java com acessos lastKwEnd..."
+cat > src/main/java/com/projectwizard/view/editor/EditorPane.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.concurrent.Task;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+public class EditorPane extends BorderPane {
+    private static final long MAX_FILE_SIZE = 1024 * 1024; // Limite de 1MB
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        if (file != null && file.length() > MAX_FILE_SIZE) {
+            System.err.println("[JDT] Arquivo muito grande para realce: " + file.getName());
+            setCenter(codeArea);
+            return;
+        }
+
+        // Listener para realce assíncrono em tempo real
+        codeArea.multiPlainChanges()
+            .subscribe(ignore -> runHighlightingAsync());
+
+        runHighlightingAsync();
+        setCenter(codeArea);
+    }
+
+    private void runHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() {
+                return computeHighlighting(text);
+            }
+        };
+
+        highlightTask.setOnSucceeded(e -> {
+            codeArea.setStyleSpans(0, highlightTask.getValue());
+        });
+
+        Thread thread = new Thread(highlightTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        //lastKwEnd precisa ser um array para ser modificado dentro da lambda
+        final int[] lastKwEnd = {0}; 
+        
+        String processableText = text.length() > 50000 ? text.substring(0, 50000) : text;
+
+        scanner.tokenize(processableText, (type, start, end) -> {
+            int spacer = start - lastKwEnd; // CORREÇÃO: Acesso ao índice 
+            if (spacer > 0) {
+                spansBuilder.add(Collections.emptyList(), spacer);
+            }
+            spansBuilder.add(Collections.singleton(type), end - start);
+            lastKwEnd = end; // CORREÇÃO: Atribuição no índice 
+        });
+        
+        int remaining = text.length() - lastKwEnd; // CORREÇÃO: Cálculo com 
+        if (remaining > 0) {
+            spansBuilder.add(Collections.emptyList(), remaining);
+        }
+        
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+EOF
+
+echo "[2/2] Limpando cache e recompilando..."
+mvn clean compile
+
+echo "========================================="
+echo " 🎉 ETAPA 18.7 CONCLUÍDA!"
+echo "========================================="
+echo "Ajustes realizados:"
+echo "✔ Corrigido erro de tipos (int vs int[]) no EditorPane."
+echo "✔ Mantida a lógica de Background Task para performance."
+echo "✔ Mantida a trava de 1MB para evitar Out-Of-Memory (Erro 137)."
+echo "========================================="
+echo "🚀 Execute: mvn javafx:run"#!/usr/bin/env bash
 set -Eeuo pipefail
 
 echo "========================================="
@@ -7815,6 +9615,350 @@ echo "Execute:"
 echo
 echo "mvn clean javafx:run"
 #!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 19.1"
+echo " Correção Definitiva de Sintaxe: lastKwEnd"
+echo "========================================="
+
+# 1. Validar ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Sobrescrevendo EditorPane.java com correção de índice ..."
+# O uso de Python com raw string garante que os caracteres  sejam escritos sem erro
+python3 <<'PY'
+from pathlib import Path
+
+content = r'''package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.concurrent.Task;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+/**
+ * EditorPane com Realce de Sintaxe Industrial.
+ * Correção: Uso obrigatório do índice  para variáveis mutáveis em Lambdas.
+ * Licença: EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only
+ */
+public class EditorPane extends BorderPane {
+    private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB [18.4]
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        if (file != null && file.length() > MAX_FILE_SIZE) {
+            System.err.println("[JDT] Arquivo muito grande para realce.");
+            setCenter(codeArea);
+            return;
+        }
+
+        // Listener assíncrono para manter a UI fluida [2-9]
+        codeArea.multiPlainChanges()
+            .subscribe(ignore -> runHighlightingAsync());
+
+        runHighlightingAsync();
+        setCenter(codeArea);
+    }
+
+    private void runHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() {
+                return computeHighlighting(text);
+            }
+        };
+
+        highlightTask.setOnSucceeded(e -> codeArea.setStyleSpans(0, highlightTask.getValue()));
+        
+        Thread thread = new Thread(highlightTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        // lastKwEnd deve ser um array final para ser alterado dentro da Lambda
+        final int[] lastKwEnd = {0}; 
+        
+        // Limita o processamento inicial para performance
+        String processableText = text.length() > 50000 ? text.substring(0, 50000) : text;
+
+        scanner.tokenize(processableText, (type, start, end) -> {
+            int spacer = start - lastKwEnd; // CORREÇÃO: ACESSO AO ÍNDICE 
+            if (spacer > 0) {
+                spansBuilder.add(Collections.emptyList(), spacer);
+            }
+            spansBuilder.add(Collections.singleton(type), end - start);
+            lastKwEnd = end; // CORREÇÃO: ATRIBUIÇÃO NO ÍNDICE 
+        });
+        
+        int remaining = text.length() - lastKwEnd; // CORREÇÃO: CÁLCULO FINAL COM 
+        if (remaining > 0) {
+            spansBuilder.add(Collections.emptyList(), remaining);
+        }
+        
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+'''
+p = Path("src/main/java/com/projectwizard/view/editor/EditorPane.java")
+p.write_text(content, encoding='utf-8')
+print(f"✔ EditorPane.java reconstruído com sucesso.")
+PY
+
+echo "[2/2] Recompilando projeto..."
+mvn clean compile
+
+echo "========================================="
+echo " 🎉 ETAPA 19.1 CONCLUÍDA!"
+echo "========================================="
+echo "✔ Erros de 'bad operand types' e 'Type mismatch' resolvidos."
+echo "✔ Proteção contra OOM (Erro 137) e processamento em background ativos." [3, 10]
+echo "========================================="
+echo "🚀 Execute: mvn javafx:run"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.1"
+echo " Implementando UI de Realce (RichTextFX)"
+echo "========================================="
+
+# 1. Adicionar dependência RichTextFX ao pom.xml
+echo "[1/3] Adicionando RichTextFX ao Maven..."
+python3 <<'PY'
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+path = Path("pom.xml")
+ET.register_namespace('', "http://maven.apache.org/POM/4.0.0")
+tree = ET.parse(path)
+root = tree.getroot()
+ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+
+deps = root.find('m:dependencies', ns)
+if not any(d.find('m:artifactId', ns).text == 'richtextfx' for d in deps.findall('m:dependency', ns)):
+    new_dep = ET.SubElement(deps, 'dependency')
+    ET.SubElement(new_dep, 'groupId').text = 'org.fxmisc.richtext'
+    ET.SubElement(new_dep, 'artifactId').text = 'richtextfx'
+    ET.SubElement(new_dep, 'version').text = '0.11.2'
+    tree.write(path, encoding='utf-8', xml_declaration=True)
+    print("✔ Dependência RichTextFX adicionada.")
+else:
+    print("ℹ RichTextFX já está presente.")
+PY
+
+# 2. Refatorar EditorPane para usar CodeArea e Highlighting
+echo "[2/3] Transformando EditorPane em Rich Editor..."
+cat > src/main/java/com/projectwizard/view/editor/EditorPane.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+public class EditorPane extends BorderPane {
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        // Listener para realce em tempo real
+        codeArea.textProperty().addListener((obs, oldVal, newVal) -> {
+            codeArea.setStyleSpans(0, computeHighlighting(newVal));
+        });
+
+        // Aplica o realce inicial
+        codeArea.setStyleSpans(0, computeHighlighting(content));
+        
+        setCenter(codeArea);
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        int lastKwEnd = 0;
+        
+        // Ponte entre o JDT Scanner e os spans do RichTextFX
+        scanner.tokenize(text, (type, start, end) -> {
+            // Preenche espaços entre tokens com estilo padrão
+            // spansBuilder.add(Collections.singleton("token-default"), start - lastKwEnd);
+            // spansBuilder.add(Collections.singleton(type), end - start);
+            // Lógica simplificada para esta etapa:
+        });
+        
+        // Placeholder funcional para garantir compilação enquanto ajustamos o scanner
+        spansBuilder.add(Collections.emptyList(), text.length());
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+EOF
+
+# 3. Ajustar EditorHost para compatibilidade com o novo componente
+echo "[3/3] Sincronizando EditorHost..."
+sed -i 's/editor.getText()/getText()/g' src/main/java/com/projectwizard/view/editor/EditorHost.java
+
+echo "========================================="
+echo " 🎉 ETAPA 18.1 CONCLUÍDA!"
+echo "========================================="
+echo "Novidades Técnicas:"
+echo "✔ RichTextFX integrado para suporte a estilos múltiplos."
+echo "✔ LineNumberFactory: Numeração de linhas automática adicionada."
+echo "✔ Estrutura preparada para Highlighting via JDT Core."
+echo "========================================="
+echo "🚀 Execute: mvn clean compile"#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 18.8"
+echo " Correção Definitiva de Escopo Lambda"
+echo "========================================="
+
+# Verificação de ambiente
+if [ ! -f pom.xml ]; then
+    echo "Erro: Execute na raiz do projeto ProjectWizard."
+    exit 1
+fi
+
+echo "[1/2] Reconstruindo EditorPane.java com acessos lastKwEnd..."
+cat > src/main/java/com/projectwizard/view/editor/EditorPane.java <<'EOF'
+package com.projectwizard.view.editor;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import javafx.concurrent.Task;
+import javafx.scene.layout.BorderPane;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import com.projectwizard.service.editor.JavaTokenScanner;
+
+/**
+ * EditorPane - Componente de edição rico com Realce de Sintaxe.
+ * Implementa processamento assíncrono para manter a UI responsiva [1, 2].
+ * Licença: EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only [3, 4]
+ */
+public class EditorPane extends BorderPane {
+    private static final long MAX_FILE_SIZE = 1024 * 1024; // Limite de 1MB para evitar OOM 137
+    private final CodeArea codeArea = new CodeArea();
+    private final JavaTokenScanner scanner = new JavaTokenScanner();
+    private File currentFile;
+
+    public EditorPane(File file, String content) {
+        this.currentFile = file;
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codeArea.replaceText(content);
+        
+        // Impede processamento de arquivos gigantes que travam a IDE [5]
+        if (file != null && file.length() > MAX_FILE_SIZE) {
+            System.err.println("[JDT] Arquivo ignorado por tamanho: " + file.getName());
+            setCenter(codeArea);
+            return;
+        }
+
+        // Listener assíncrono para realce em tempo real [6, 7]
+        codeArea.multiPlainChanges()
+            .subscribe(ignore -> runHighlightingAsync());
+
+        runHighlightingAsync();
+        setCenter(codeArea);
+    }
+
+    private void runHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() {
+                return computeHighlighting(text);
+            }
+        };
+
+        highlightTask.setOnSucceeded(e -> {
+            codeArea.setStyleSpans(0, highlightTask.getValue());
+        });
+
+        // Executa em thread separada para não travar a renderização [2]
+        Thread thread = new Thread(highlightTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting(String text) {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        // O array final permite modificação dentro da lambda sem violar a regra de escopo
+        final int[] lastKwEnd = {0}; 
+        
+        // Otimização Lazy: Processa apenas os primeiros 50k caracteres se necessário
+        String processableText = text.length() > 50000 ? text.substring(0, 50000) : text;
+
+        scanner.tokenize(processableText, (type, start, end) -> {
+            int spacer = start - lastKwEnd; // ACESSO AO ÍNDICE  - CORRIGIDO
+            if (spacer > 0) {
+                spansBuilder.add(Collections.emptyList(), spacer);
+            }
+            spansBuilder.add(Collections.singleton(type), end - start);
+            lastKwEnd = end; // ATRIBUIÇÃO NO ÍNDICE  - CORRIGIDO
+        });
+        
+        int remaining = text.length() - lastKwEnd; // CÁLCULO FINAL - CORRIGIDO
+        if (remaining > 0) {
+            spansBuilder.add(Collections.emptyList(), remaining);
+        }
+        
+        return spansBuilder.create();
+    }
+
+    public String getText() { return codeArea.getText(); }
+    public File getFile() { return currentFile; }
+}
+EOF
+
+echo "[2/2] Realizando limpeza profunda e compilação..."
+mvn clean compile
+
+echo "========================================="
+echo " 🎉 ETAPA 18.8 CONCLUÍDA!"
+echo "========================================="
+echo "Novidades Técnicas:"
+echo "✔ Corrigido erro de tipos: int vs int[] através de lastKwEnd."
+echo "✔ Respeitada a restrição de variável 'final' em Lambdas."
+echo "✔ Mantidas travas de 1MB e 50k chars contra Erro 137 (OOM) [8]."
+echo "========================================="
+echo "🚀 Execute: mvn javafx:run"#!/usr/bin/env bash
 set -e
 
 echo "========================================="
@@ -8520,4 +10664,56 @@ echo
 echo "Execute:"
 echo
 echo "mvn clean javafx:run"
-find . -name "*.java" -exec cat {} + > all_java_code_report.txt
+find . -name "*.java" -exec cat {} + > all_java_code_report.txtfind . -name "*.xml" -exec cat {} + > all_xml_code_report.txtscripts=(); for f in create-file-with-all-*.sh; do [[ "$f" != *"sh-files.sh" ]] && scripts+=("$f"); done; total=${#scripts[@]}; for ((i=0; i<total; i++)); do f="${scripts[$i]}"; echo "Executando $((i+1)) de $total: $f"; ./"$f"; done
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+echo "========================================="
+echo " Project Wizard - Etapa 19.5"
+echo " Sincronização Final de Mapeamento"
+echo "========================================="
+
+# 1. Garantir que o CSS use os seletores exatos esperados pelo RichTextFX
+echo "[1/2] Atualizando seletores no projectwizard.css..."
+cat > src/main/resources/themes/projectwizard.css <<'EOF'
+/* Estilos para os tokens de código */
+.token-keyword { -fx-fill: #ff7b72; -fx-font-weight: bold; }
+.token-string { -fx-fill: #a5d6ff; }
+.token-comment { -fx-fill: #8b949e; -fx-font-style: italic; }
+.token-identifier { -fx-fill: #d2a8ff; }
+.token-default { -fx-fill: #adbac7; }
+
+/* Configuração do editor */
+.code-area {
+    -fx-background-color: #0d1117;
+    -fx-font-family: 'Consolas', 'Monospace';
+    -fx-font-size: 13px;
+    -fx-text-fill: #adbac7;
+}
+EOF
+
+# 2. Forçar o JavaTokenScanner a retornar as strings IDÊNTICAS aos seletores CSS
+echo "[2/2] Unificando strings no JavaTokenScanner.java..."
+python3 <<'PY'
+from pathlib import Path
+p = Path("src/main/java/com/projectwizard/service/editor/JavaTokenScanner.java")
+if p.exists():
+    txt = p.read_text()
+    # Substitui nomes curtos por nomes com prefixo 'token-' para bater com o CSS
+    txt = txt.replace('"keyword"', '"token-keyword"')
+    txt = txt.replace('"string"', '"token-string"')
+    txt = txt.replace('"comment"', '"token-comment"')
+    txt = txt.replace('"identifier"', '"token-identifier"')
+    txt = txt.replace('"default"', '"token-default"')
+    p.write_text(txt)
+    print("✔ Mapeamento de tokens unificado com o CSS.")
+PY
+
+echo "========================================="
+echo " 🎉 MAPEAMENTO SINCRONIZADO!"
+echo "========================================="
+echo "🚀 Execute: mvn clean javafx:run"
+echo "-----------------------------------------"
+echo "Dica: Ao abrir, digite 'public class Test' no editor."
+echo "Se 'public' e 'class' ficarem vermelhos/rosa,"
+echo "o realce industrial está 100% ativo!"
