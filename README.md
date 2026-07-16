@@ -1,8 +1,5 @@
----
-
 # README.md
 
-```markdown
 # Project Wizard 🧙‍♂️
 
 > Desktop Project Generator desenvolvido em Java 17, JavaFX e AtlantaFX.
