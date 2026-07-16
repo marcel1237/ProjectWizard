@@ -1,5 +1,3 @@
-Aqui está o arquivo `README.md` atualizado. A estrutura de tópicos foi preservada, mas as seções foram enriquecidas com **títulos padronizados contendo ícones (emojis)** para seguir fielmente a identidade visual moderna e amigável já presente no `contributing.md` e no `LICENSE.md`.
-
 ---
 
 # README.md
