@@ -1,11 +1,4 @@
-Aqui está o arquivo `README.md` atualizado. A estrutura de tópicos foi preservada, mas as seções foram enriquecidas com **títulos padronizados contendo ícones (emojis)** para seguir fielmente a identidade visual moderna e amigável já presente no `contributing.md` e no `LICENSE.md`.
-
----
-
-# README.md
-
-```markdown
-# Project Wizard 🧙‍♂️
+# Project Wizard
 
 > Desktop Project Generator desenvolvido em Java 17, JavaFX e AtlantaFX.
 
@@ -15,7 +8,7 @@ O projeto está sendo desenvolvido de forma incremental, utilizando pequenas eta
 
 ---
 
-## 🎯 Objetivos
+# Objetivos
 
 O Project Wizard pretende se tornar uma plataforma para geração de projetos, inicialmente para o ecossistema Java e posteriormente para outras tecnologias.
 
@@ -35,7 +28,7 @@ Tecnologias planejadas:
 
 ---
 
-## 💻 Tecnologias Utilizadas
+# Tecnologias Utilizadas
 
 - Java 17
 - JavaFX 17
@@ -46,7 +39,7 @@ Tecnologias planejadas:
 
 ---
 
-## 🎨 Interface
+# Interface
 
 Atualmente o projeto possui:
 
@@ -63,38 +56,36 @@ Atualmente o projeto possui:
 
 ---
 
-## 📁 Estrutura do Projeto
-
+# Estrutura do Projeto
 
 ```
-
 src/main/java/com/projectwizard
 
 core/
-ApplicationContext
-Constants
-Version
+    ApplicationContext
+    Constants
+    Version
 
 core/navigation/
-NavigationController
-NavigationTarget
+    NavigationController
+    NavigationTarget
 
 service/
-DialogService
-FileSystemService
-ProjectService
-SettingsService
+    DialogService
+    FileSystemService
+    ProjectService
+    SettingsService
 
 theme/
-ThemeManager
-ThemeType
+    ThemeManager
+    ThemeType
 
 view/
-MainWindow
-WorkspacePane
-NavigationPane
-StatusBar
-MainToolBar
+    MainWindow
+    WorkspacePane
+    NavigationPane
+    StatusBar
+    MainToolBar
 
 view/dashboard/
 view/newproject/
@@ -103,19 +94,20 @@ view/git/
 view/github/
 view/settings/
 view/about/
-
 ```
 
 ---
 
-## ⚙️ Recursos Atuais
+# Recursos Atuais
 
-### 📊 Dashboard
+## Dashboard
+
 Tela inicial da aplicação.
 
 ---
 
-### 🗂️ Sidebar
+## Sidebar
+
 Permite acessar:
 
 - Dashboard
@@ -129,18 +121,22 @@ Permite acessar:
 
 ---
 
-### 🖥️ Workspace
-Área principal onde as telas são carregadas dinamicamente.
+## Workspace
+
+Área principal onde as telas são carregadas dinamamente.
 
 ---
 
-### 🎨 Sistema de Temas
+## Sistema de Temas
+
 O projeto utiliza AtlantaFX.
 
 Tema atual:
+
 - Primer Dark
 
 Temas planejados:
+
 - Dracula
 - Primer Light
 - Nord Dark
@@ -149,15 +145,13 @@ Temas planejados:
 
 ---
 
-## 🧙‍♂️ Wizard de Projetos
+# Wizard de Projetos
 
 Em desenvolvimento.
 
 Fluxo planejado:
 
-
 ```
-
 Project
 
 ↓
@@ -179,49 +173,53 @@ Git
 ↓
 
 Summary
-
 ```
 
 ---
 
-## 📦 Templates Planejados
+# Templates Planejados
 
-### ☕ Java
+## Java
+
 - Java Console
 - Java Library
 
-### 🦊 JavaFX
+## JavaFX
+
 - Desktop Application
 - MVVM
 - MVP
 
-### 🍃 Spring Boot
+## Spring Boot
+
 - REST API
 - MVC
 - CRUD
 - Clean Architecture
 
-### 🛠️ Maven
+## Maven
+
 - Empty Project
 
-### 🐘 Gradle
+## Gradle
+
 - Empty Project
 
 ---
 
-## 🐙 Git
+# Git
 
 Planejado:
 
-- `git init`
-- `git clone`
-- `git status`
-- `git commit`
-- `git push`
+- git init
+- git clone
+- git status
+- git commit
+- git push
 
 ---
 
-## 🐈 GitHub
+# GitHub
 
 Planejado:
 
@@ -233,13 +231,11 @@ Planejado:
 
 ---
 
-## 📐 Arquitetura
+# Arquitetura
 
 O projeto está migrando para uma arquitetura organizada por módulos.
 
-
 ```
-
 core/
 
 theme/
@@ -257,103 +253,104 @@ wizard/
 git/
 
 github/
-
 ```
 
 ---
 
-## 🗺️ Roadmap
+# Roadmap
 
-### 🏁 Fase 1
+## Fase 1
+
 - Interface
 - Tema
 - Sidebar
 - Workspace
 
-✔ **Concluído**
+✔ Concluído
 
 ---
 
-### 🚀 Fase 2
+## Fase 2
+
 - Navegação
 - Wizard
 - Templates
 
-⏳ **Em desenvolvimento**
+Em desenvolvimento
 
 ---
 
-### ⚙️ Fase 3
+## Fase 3
+
 - Engine de geração
 
-📋 **Planejado**
+Planejado
 
 ---
 
-### 🌿 Fase 4
+## Fase 4
+
 - Integração Git
 
-📋 **Planejado**
+Planejado
 
 ---
 
-### ☁️ Fase 5
+## Fase 5
+
 - Integração GitHub
 
-📋 **Planejado**
+Planejado
 
 ---
 
-### 🛒 Fase 6
+## Fase 6
+
 - Marketplace de Templates
 
-📋 **Planejado**
+Planejado
 
 ---
 
-## 📋 Requisitos
+# Requisitos
 
-* Java 17
-* Maven 3.9+
+- Java 17
+- Maven 3.9+
 
-Verificar versões instaladas:
+Verificar versões:
 
 ```bash
 java -version
 mvn -version
-
 ```
 
 ---
 
-## ⚡ Executando
+# Executando
 
 ```bash
 mvn clean javafx:run
-
 ```
 
 ---
 
-## 📦 Build e Empacotamento
+# Build
 
 ```bash
 mvn clean package
-
 ```
 
 ---
 
-## 🧹 Limpeza do Projeto
+# Limpeza
 
 ```bash
 mvn clean
-
 ```
 
 ---
 
-## 📈 Estado Atual
+# Estado Atual
 
 O projeto encontra-se em desenvolvimento ativo.
 
@@ -361,12 +358,6 @@ As funcionalidades são implementadas incrementalmente através de scripts "one-
 
 ---
 
-## ⚖️ Licença
+# Licença
 
-Este projeto adota um regime de co-licenciamento quádruplo obrigatório (**Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only**) para garantir a máxima segurança, copyleft e proteção de patentes.
-
-Para detalhes completos sobre termos, obrigações e cabeçalhos de arquivos, consulte o diretório `license/` ou o arquivo `LICENSE.md`.
-
-```
-
-```
+Consulte o diretório `license/`.
