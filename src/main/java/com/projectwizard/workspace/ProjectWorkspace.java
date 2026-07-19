@@ -36,6 +36,9 @@ public class ProjectWorkspace extends BorderPane {
         editor = new EditorHost();
         setupFileOpenHandler();
 
+        // Restaurar arquivos abertos anteriormente no editor
+        editor.restoreState();
+
         SplitPane splitPane = new SplitPane();
         splitPane.getItems().addAll(explorer, editor);
         splitPane.setDividerPositions(0.25);

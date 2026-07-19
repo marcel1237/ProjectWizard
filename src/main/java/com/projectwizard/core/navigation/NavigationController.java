@@ -2,6 +2,7 @@ package com.projectwizard.core.navigation;
 
 import java.io.File;
 
+import com.projectwizard.service.PersistenceService;
 import com.projectwizard.view.WorkspacePane;
 import com.projectwizard.view.about.AboutView;
 import com.projectwizard.view.dashboard.DashboardView;
@@ -55,6 +56,7 @@ public final class NavigationController {
         if (workspace == null || projectRoot == null) return;
 
         if (target == NavigationTarget.WORKSPACE) {
+            new PersistenceService().saveLastProjectPath(projectRoot.getAbsolutePath());
             projectWorkspace = new ProjectWorkspace();
             projectWorkspace.loadProject(projectRoot);
             workspace.setContent(projectWorkspace);

@@ -9,7 +9,8 @@ public final class EditorSupport {
     private static final String[] TEXT_EXTENSIONS = {
         ".java", ".xml", ".json", ".properties", ".yml", ".yaml",
         ".md", ".txt", ".html", ".fxml", ".css", ".scss", ".sql", ".sh",
-        ".gradle", ".kt", ".groovy", ".toml", ".ini", ".cfg", ".log"
+        ".gradle", ".kt", ".groovy", ".toml", ".ini", ".cfg", ".log",
+        ".js", ".jsx", ".ts", ".tsx", ".py", ".pyw", ".bat", ".cmd"
     };
 
     private static final int MAX_PREVIEW_CHARS = 50_000;

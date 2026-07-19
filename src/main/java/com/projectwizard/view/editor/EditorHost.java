@@ -5,15 +5,44 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.projectwizard.core.ApplicationContext;
+import com.projectwizard.service.PersistenceService;
 
 public class EditorHost extends BorderPane {
     private final TabPane tabPane = new TabPane();
+    private final PersistenceService persistence = new PersistenceService();
 
     public EditorHost() {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
         setupToolBar();
         setCenter(tabPane);
+
+        // Salvar estado quando abas mudam
+        tabPane.getTabs().addListener((javafx.collections.ListChangeListener.Change<? extends Tab> c) -> {
+            saveState();
+        });
+    }
+
+    private void saveState() {
+        List<String> paths = tabPane.getTabs().stream()
+                .filter(t -> t.getContent() instanceof EditorPane)
+                .map(t -> ((EditorPane) t.getContent()).getFile().getAbsolutePath())
+                .collect(Collectors.toList());
+        persistence.saveOpenFiles(paths);
+    }
+
+    public void restoreState() {
+        List<String> paths = persistence.getOpenFiles();
+        for (String path : paths) {
+            File file = new File(path);
+            if (file.exists() && file.isFile()) {
+                openFile(file);
+            }
+        }
     }
 
     private void setupToolBar() {

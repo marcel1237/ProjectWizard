@@ -35,6 +35,8 @@ com/projectwizard/theme/ThemeType.class
 com/projectwizard/view/git/GitView.class
 com/projectwizard/core/navigation/NavigationController$1.class
 com/projectwizard/service/editor/JetBrainsSyntaxScanner.class
+com/projectwizard/Launcher.class
+com/projectwizard/service/PersistenceService.class
 com/projectwizard/view/about/AboutView.class
 com/projectwizard/service/DialogService.class
 com/projectwizard/view/dashboard/DashboardView.class

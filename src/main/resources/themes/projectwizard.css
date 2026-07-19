@@ -1,14 +1,75 @@
-/* Estilos para os tokens de código */
+/* Estilos para os tokens de código (GitHub Dark Aprimorado) */
 .token-keyword { -fx-fill: #ff7b72; -fx-font-weight: bold; }
 .token-string { -fx-fill: #a5d6ff; }
 .token-comment { -fx-fill: #8b949e; -fx-font-style: italic; }
-.token-identifier { -fx-fill: #d2a8ff; }
-.token-default { -fx-fill: #adbac7; }
+.token-identifier { -fx-fill: #c9d1d9; }
+.token-number { -fx-fill: #d2a8ff; }
+.token-operator { -fx-fill: #79c0ff; }
+.token-annotation { -fx-fill: #ffa657; }
+.token-punctuation { -fx-fill: #79c0ff; }
+.token-default { -fx-fill: #c9d1d9; }
+
+/* Estilos Vibrantes para XML / FXML */
+.token-tag {
+    -fx-fill: #7ee787;
+    -fx-font-weight: bold;
+}
+.token-attribute {
+    -fx-fill: #79c0ff;
+}
+
+/* Estilos para Markdown (.md) */
+.token-md-header { -fx-fill: #79c0ff; -fx-font-weight: bold; -fx-font-size: 1.2em; }
+.token-md-code { -fx-fill: #ff7b72; -fx-background-color: #161b22; }
+.token-md-bold { -fx-fill: #c9d1d9; -fx-font-weight: bold; }
+.token-md-italic { -fx-fill: #c9d1d9; -fx-font-style: italic; }
+.token-md-link { -fx-fill: #a5d6ff; -fx-underline: true; }
+.token-md-list { -fx-fill: #ffa657; }
+.token-md-quote { -fx-fill: #8b949e; -fx-font-style: italic; }
+
+/* Estilos para Shell Script (.sh) */
+.token-sh-var { -fx-fill: #ffa657; }
+.token-sh-cmd { -fx-fill: #a5d6ff; -fx-font-style: italic; }
 
 /* Configuração do editor */
 .code-area {
     -fx-background-color: #0d1117;
-    -fx-font-family: 'Consolas', 'Monospace';
-    -fx-font-size: 13px;
-    -fx-text-fill: #adbac7;
+    -fx-font-family: 'Consolas', 'DejaVu Sans Mono', 'Monospace';
+    -fx-font-size: 14px;
+    -fx-text-fill: #c9d1d9;
 }
+
+/* Realce da linha atual */
+.current-line {
+    -fx-background-color: #161b22;
+}
+
+/* Números de linha */
+.lineno {
+    -fx-background-color: #0d1117;
+    -fx-text-fill: #484f58;
+    -fx-padding: 0 10 0 10;
+    -fx-font-size: 12px;
+}
+
+/* Scrollbars */
+.virtualized-scroll-pane .scroll-bar:vertical,
+.virtualized-scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.virtualized-scroll-pane .scroll-bar .thumb {
+    -fx-background-color: #30363d;
+    -fx-background-radius: 10;
+}
+
+/* Estilos para o Explorador de Arquivos (Package Explorer) */
+.file-java { -fx-fill: #ffa657; -fx-icon-color: #ffa657; }
+.file-xml { -fx-fill: #7ee787; -fx-icon-color: #7ee787; }
+.file-md { -fx-fill: #79c0ff; -fx-icon-color: #79c0ff; }
+.file-sh { -fx-fill: #ff7b72; -fx-icon-color: #ff7b72; }
+.file-js { -fx-fill: #f2e05c; -fx-icon-color: #f2e05c; }
+.file-css { -fx-fill: #d2a8ff; -fx-icon-color: #d2a8ff; }
+.file-json { -fx-fill: #a5d6ff; -fx-icon-color: #a5d6ff; }
+.file-folder { -fx-fill: #adbac7; -fx-icon-color: #adbac7; -fx-font-weight: bold; }
+.file-default { -fx-fill: #adbac7; -fx-icon-color: #adbac7; }
+

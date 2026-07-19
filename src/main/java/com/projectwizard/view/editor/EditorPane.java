@@ -7,6 +7,7 @@ import java.util.Collections;
 import javafx.concurrent.Task;
 import javafx.scene.layout.BorderPane;
 
+import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -16,7 +17,6 @@ import com.projectwizard.service.editor.JetBrainsSyntaxScanner;
 
 /**
  * EditorPane com Realce de Sintaxe Industrial.
- * Licença: EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only
  */
 public class EditorPane extends BorderPane {
 
@@ -34,15 +34,26 @@ public class EditorPane extends BorderPane {
 
         if (file != null && file.length() > MAX_FILE_SIZE) {
             System.err.println("[JDT] Arquivo muito grande para realce.");
-            setCenter(codeArea);
+            setCenter(new VirtualizedScrollPane<>(codeArea));
             return;
         }
 
         // Listener assíncrono para manter a UI fluida
         codeArea.multiPlainChanges().subscribe(ignore -> runHighlightingAsync());
 
+        // Realce da linha atual
+        codeArea.setParagraphStyle(0, Collections.singleton("current-line"));
+        codeArea.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
+            int oldLine = codeArea.offsetToPosition(oldPos, CodeArea.Bias.Forward).getMajor();
+            int newLine = codeArea.offsetToPosition(newPos, CodeArea.Bias.Forward).getMajor();
+            if (oldLine != newLine) {
+                codeArea.setParagraphStyle(oldLine, Collections.emptyList());
+                codeArea.setParagraphStyle(newLine, Collections.singleton("current-line"));
+            }
+        });
+
         runHighlightingAsync();
-        setCenter(codeArea);
+        setCenter(new VirtualizedScrollPane<>(codeArea));
     }
 
     private void runHighlightingAsync() {
@@ -67,19 +78,19 @@ public class EditorPane extends BorderPane {
         StyleSpansBuilder<Collection<String>> spansBuilder =
                 new StyleSpansBuilder<>();
 
-        // Mutable value for use inside the lambda
         final int[] lastKwEnd = { 0 };
 
-        // Limit processing for very large files
         String processableText = text.length() > 50000
                 ? text.substring(0, 50000)
                 : text;
 
-        scanner.tokenize(processableText, (type, start, end) -> {
+        String fileName = currentFile != null ? currentFile.getName() : "Main.java";
+
+        scanner.tokenize(processableText, fileName, (type, start, end) -> {
 
             int spacer = start - lastKwEnd[0];
             if (spacer > 0) {
-                spansBuilder.add(Collections.emptyList(), spacer);
+                spansBuilder.add(Collections.singleton("token-default"), spacer);
             }
 
             spansBuilder.add(Collections.singleton(type), end - start);
@@ -89,7 +100,7 @@ public class EditorPane extends BorderPane {
 
         int remaining = text.length() - lastKwEnd[0];
         if (remaining > 0) {
-            spansBuilder.add(Collections.emptyList(), remaining);
+            spansBuilder.add(Collections.singleton("token-default"), remaining);
         }
 
         return spansBuilder.create();
