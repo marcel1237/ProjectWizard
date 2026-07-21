@@ -1,3 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "=========================================="
+echo " ProjectWizard - Penta License Update"
+echo "=========================================="
+
+FILE="LICENSE.md"
+
+# Backup
+cp "$FILE" "$FILE.bak20_1"
+
+# Sobrescreve usando CAT
+cat > "$FILE" <<'EOF'
 # LICENSE
 
 ## ⚖️ Licenciamento Conjunto Obrigatório (Penta Co-Licensing)
@@ -121,3 +136,22 @@ Copie e cole este bloco no topo de **todos** os novos arquivos `.java` criados n
  * A conformidade com todas as cinco licenças é obrigatória para uso e distribuição.
  */
 ```
+EOF
+
+echo
+echo "=========================================="
+echo " LICENSE.md atualizado com PWL-1.0"
+echo "=========================================="
+echo
+echo "Backup: $FILE.bak20_1"
+echo
+echo "Agora o projeto possui Penta Co-Licensing:"
+echo "  - Apache-2.0"
+echo "  - EPL-2.0"
+echo "  - MPL-2.0"
+echo "  - AGPL-3.0-only"
+echo "  - PWL-1.0 (sua licença autoral)"
+echo
+echo "Próximo passo:"
+echo "  git add LICENSE.md"
+echo "  git commit -m 'feat: add ProjectWizard License as fifth license (PWL-1.0)'"
