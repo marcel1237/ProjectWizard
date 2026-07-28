@@ -9,5 +9,10 @@ public enum NavigationTarget {
     GITHUB,
     SETTINGS,
     ABOUT,
-    WORKSPACE
+    WORKSPACE,
+    BROWSER,
+    TERMINAL,
+    DATABASE,
+    GEMINI,
+    SHELL_SCRIPTING
 }

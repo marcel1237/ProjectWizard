@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.projectwizard.core.ApplicationContext;
 import com.projectwizard.service.PersistenceService;
+import com.projectwizard.service.BackupService;
 
 public class EditorHost extends BorderPane {
     private final TabPane tabPane = new TabPane();
@@ -57,7 +58,10 @@ public class EditorHost extends BorderPane {
         Tab selected = tabPane.getSelectionModel().getSelectedItem();
         if (selected != null && selected.getContent() instanceof EditorPane pane) {
             try {
-                ApplicationContext.getInstance().getFileSystemService().saveFile(pane.getFile(), pane.getText());
+                String content = pane.getText();
+                File file = pane.getFile();
+                ApplicationContext.getInstance().getFileSystemService().saveFile(file, content);
+                BackupService.getInstance().performSaveLog(file, content);
             } catch (Exception ex) {
                 ApplicationContext.getInstance().getDialogService().showError("Error", ex.getMessage());
             }

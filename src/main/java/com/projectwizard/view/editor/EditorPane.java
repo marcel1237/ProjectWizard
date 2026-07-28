@@ -38,8 +38,10 @@ public class EditorPane extends BorderPane {
             return;
         }
 
-        // Listener assíncrono para manter a UI fluida
-        codeArea.multiPlainChanges().subscribe(ignore -> runHighlightingAsync());
+        // Listener assíncrono com debounce para evitar sobrecarga de CPU
+        codeArea.multiPlainChanges()
+                .successionEnds(java.time.Duration.ofMillis(300))
+                .subscribe(ignore -> runHighlightingAsync());
 
         // Realce da linha atual
         codeArea.setParagraphStyle(0, Collections.singleton("current-line"));

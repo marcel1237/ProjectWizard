@@ -2,7 +2,7 @@ package com.projectwizard.view;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
-
+import javafx.scene.control.Separator;
 import com.projectwizard.core.navigation.NavigationController;
 import com.projectwizard.core.navigation.NavigationTarget;
 
@@ -11,19 +11,35 @@ public class MainToolBar extends ToolBar {
     public MainToolBar() {
 
         Button newProject = new Button("New Project");
-
         Button open = new Button("Open");
 
-        open.setOnAction(e ->
-                NavigationController.getInstance()
-                        .navigate(NavigationTarget.OPEN_PROJECT)
-        );
+        open.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.OPEN_PROJECT));
 
-        Button settings = new Button("Settings");
+        Button workspace = new Button("📂 Workspace");
+        workspace.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.WORKSPACE));
+
+        Button browser = new Button("🌐 Browser");
+        browser.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.BROWSER));
+
+        Button database = new Button("🗄 DB");
+        database.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.DATABASE));
+
+        Button terminal = new Button("💻 Term");
+        terminal.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.TERMINAL));
+
+        Button ai = new Button("✨ Gemini");
+        ai.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.GEMINI));
+
+        Button shell = new Button("🐚 Shell");
+        shell.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.SHELL_SCRIPTING));
+
+        Button settings = new Button("⚙ Settings");
 
         getItems().addAll(
-                newProject,
-                open,
+                newProject, open,
+                new Separator(),
+                workspace, browser, database, terminal, ai, shell,
+                new Separator(),
                 settings
         );
     }

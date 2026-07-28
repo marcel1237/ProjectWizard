@@ -2,8 +2,7 @@ package com.projectwizard.core.navigation;
 
 import java.io.File;
 
-import com.projectwizard.service.PersistenceService;
-import com.projectwizard.view.WorkspacePane;
+import com.projectwizard.view.*;
 import com.projectwizard.view.about.AboutView;
 import com.projectwizard.view.dashboard.DashboardView;
 import com.projectwizard.view.git.GitView;
@@ -13,6 +12,7 @@ import com.projectwizard.view.openproject.OpenProjectView;
 import com.projectwizard.view.settings.SettingsView;
 import com.projectwizard.view.templates.TemplatesView;
 import com.projectwizard.workspace.ProjectWorkspace;
+import com.projectwizard.service.PersistenceService;
 
 public final class NavigationController {
 
@@ -43,6 +43,16 @@ public final class NavigationController {
             case GITHUB -> workspace.setContent(new GitHubView());
             case SETTINGS -> workspace.setContent(new SettingsView());
             case ABOUT -> workspace.setContent(new AboutView());
+            case BROWSER -> {
+                BrowserPane bp = new BrowserPane();
+                String lastPath = new PersistenceService().getLastProjectPath();
+                if (lastPath != null) bp.setProjectPath(lastPath);
+                workspace.setContent(bp);
+            }
+            case TERMINAL -> workspace.setContent(new TerminalPane());
+            case DATABASE -> workspace.setContent(new DatabasePane());
+            case GEMINI -> workspace.setContent(new GeminiPane());
+            case SHELL_SCRIPTING -> workspace.setContent(new ShellScriptingPane());
             case WORKSPACE -> {
                 if (projectWorkspace == null) {
                     projectWorkspace = new ProjectWorkspace();

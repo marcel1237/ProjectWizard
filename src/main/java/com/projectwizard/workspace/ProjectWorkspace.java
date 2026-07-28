@@ -1,17 +1,16 @@
 package com.projectwizard.workspace;
 
 import java.io.File;
-
 import javafx.geometry.Insets;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.layout.BorderPane;
-
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import com.projectwizard.model.Project;
+import com.projectwizard.view.*;
 import com.projectwizard.view.editor.EditorHost;
 import com.projectwizard.view.editor.EditorSupport;
 import com.projectwizard.view.explorer.PackageExplorer;
 import com.projectwizard.view.explorer.FileTreeCell;
+import com.projectwizard.service.BackupService;
 
 public class ProjectWorkspace extends BorderPane {
 
@@ -20,12 +19,25 @@ public class ProjectWorkspace extends BorderPane {
     private EditorHost editor;
     private ProjectHeader header;
 
+    private TabPane bottomTabs;
+    private TabPane eastTabs;
+    private SplitPane horizontalSplitter;
+    private SplitPane verticalSplitter;
+
+    private GeminiPane geminiPane;
+    private GitPane gitPane;
+    private TerminalPane terminalPane;
+    private VersionsPane versionsPane;
+    private SavesPane savesPane;
+
     public ProjectWorkspace() {
         setPadding(new Insets(0));
     }
 
     public void loadProject(File projectRoot) {
         currentProject = new Project(projectRoot);
+        BackupService.getInstance().init(projectRoot.getAbsolutePath());
+        
         header = new ProjectHeader(currentProject);
         setTop(header);
 
@@ -34,34 +46,103 @@ public class ProjectWorkspace extends BorderPane {
         explorer.openProject(projectRoot);
 
         editor = new EditorHost();
+        editor.restoreState();
         setupFileOpenHandler();
 
-        // Restaurar arquivos abertos anteriormente no editor
-        editor.restoreState();
+        // East Pane
+        eastTabs = new TabPane();
+        geminiPane = new GeminiPane();
+        geminiPane.setProjectRoot(projectRoot.getAbsolutePath());
+        gitPane = new GitPane();
+        gitPane.setProjectPath(projectRoot.getAbsolutePath());
+        eastTabs.getTabs().addAll(new Tab("✨ AI", geminiPane), new Tab("🌿 Git", gitPane), new Tab("🐚 Shell", new ShellScriptingPane()));
 
-        SplitPane splitPane = new SplitPane();
-        splitPane.getItems().addAll(explorer, editor);
-        splitPane.setDividerPositions(0.25);
+        // South Pane
+        bottomTabs = new TabPane();
+        terminalPane = new TerminalPane();
+        versionsPane = new VersionsPane();
+        savesPane = new SavesPane();
+        bottomTabs.getTabs().addAll(
+            new Tab("💻 Terminal", terminalPane), 
+            new Tab("🗄 DB", new DatabasePane()),
+            new Tab("🕰️ Versões", versionsPane),
+            new Tab("💾 Saves", savesPane)
+        );
 
-        setCenter(splitPane);
+        horizontalSplitter = new SplitPane(explorer, editor, eastTabs);
+        horizontalSplitter.setDividerPositions(0.20, 0.75);
+
+        verticalSplitter = new SplitPane(horizontalSplitter, bottomTabs);
+        verticalSplitter.setOrientation(javafx.geometry.Orientation.VERTICAL);
+        verticalSplitter.setDividerPositions(0.75);
+
+        setCenter(verticalSplitter);
+
+        setupToggles();
+        setupBuildHandler();
+    }
+
+    private void setupToggles() {
+        header.setOnToggleEast(() -> {
+            if (horizontalSplitter.getItems().contains(eastTabs)) {
+                horizontalSplitter.getItems().remove(eastTabs);
+            } else {
+                horizontalSplitter.getItems().add(eastTabs);
+                horizontalSplitter.setDividerPositions(0.20, 0.75);
+            }
+        });
+
+        header.setOnToggleSouth(() -> {
+            if (verticalSplitter.getItems().contains(bottomTabs)) {
+                verticalSplitter.getItems().remove(bottomTabs);
+            } else {
+                verticalSplitter.getItems().add(bottomTabs);
+                verticalSplitter.setDividerPositions(0.75);
+            }
+        });
+    }
+
+    private void setupBuildHandler() {
+        header.setOnBuildRequested(() -> {
+            if (!verticalSplitter.getItems().contains(bottomTabs)) {
+                verticalSplitter.getItems().add(bottomTabs);
+                verticalSplitter.setDividerPositions(0.75);
+            }
+            bottomTabs.getSelectionModel().select(0); // Terminal
+            terminalPane.logSystem("Iniciando Backup + Build...");
+
+            new Thread(() -> {
+                // 1. Backup
+                BackupService.getInstance().performBuildBackup("Manual Build Triggered");
+                terminalPane.appendOutput("✅ Backup concluído.\n");
+
+                // 2. Build (Executa script se existir)
+                File buildScript = new File(currentProject.getRootDirectory(), "build.sh");
+                if (buildScript.exists()) {
+                    terminalPane.appendOutput("🚀 Executando build.sh...\n");
+                    terminalPane.sendCommand("./build.sh");
+                } else {
+                    terminalPane.appendOutput("⚠️ Arquivo build.sh não encontrado na raiz.\n");
+                }
+                
+                javafx.application.Platform.runLater(() -> {
+                    versionsPane.loadVersions();
+                });
+            }).start();
+        });
     }
 
     private void setupFileOpenHandler() {
         explorer.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 TreeItem<File> selected = explorer.getSelectionModel().getSelectedItem();
-                if (selected != null && selected.getValue() != null) {
+                if (selected != null && selected.getValue() != null && selected.getValue().isFile()) {
                     File file = selected.getValue();
-                    if (file.isFile() && EditorSupport.isTextFile(file)) {
+                    if (EditorSupport.isTextFile(file)) {
                         editor.openFile(file);
                     }
                 }
             }
         });
     }
-
-    public Project getCurrentProject() {
-        return currentProject;
-    }
-
 }
