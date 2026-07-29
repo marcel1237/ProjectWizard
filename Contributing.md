@@ -8,11 +8,11 @@ Para manter a qualidade do código, a estabilidade da IDE e a segurança jurídi
 
 ## ⚖️ Conformidade Legal Importante (Developer Certificate of Origin)
 
-O ProjectWizard utiliza um regime de co-licenciamento triplo obrigatório (**EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only**). 
+O ProjectWizard utiliza o modelo **Hexa Co-Licensing** (BSD-3-Clause, Apache-2.0, EPL-2.0, MPL-2.0, UPL-1.0, AGPL-3.0-only e PWL-3.0).
 
 Ao submeter qualquer código, documentação ou modificação para este projeto, você afirma categoricamente que:
-1. Você possui os direitos autorais do código enviado ou tem permissão legal do detentor dos direitos para submetê-lo sob estas três licenças.
-2. Você concorda em licenciar sua contribuição permanentemente sob os termos conjuntos da **EPL-2.0, MPL-2.0 e AGPL-3.0-only**.
+1. Você possui os direitos autorais do código enviado ou tem permissão legal do detentor dos direitos para submetê-lo sob este conjunto de licenças.
+2. Você concorda em licenciar sua contribuição permanentemente sob os termos conjuntos do modelo **Hexa Co-Licensing** aplicados ao projeto.
 
 ### ⚠️ Regra de Commits (DCO - Sign-off)
 Para garantir a procedência legal do código, exigimos que todos os commits enviados via Pull Request possuam a assinatura eletrônica do desenvolvedor (`Signed-off-by`).
@@ -32,7 +32,7 @@ Para manter o código limpo, legível e auditável, siga estritamente estas regr
 
 1. **Cabeçalho de Licença Obrigatório:** Todo arquivo `.java` novo **deve** conter o cabeçalho SPDX padrão nas primeiras linhas. Pull Requests com arquivos sem cabeçalho serão rejeitados automaticamente.
 2. **Convenção de Nomes:** Siga os padrões oficiais da Oracle (Classes em `PascalCase`, métodos e variáveis em `camelCase`, constantes em `UPPER_SNAKE_CASE`).
-3. **Versão do Java:** O projeto utiliza o **Java [Insira a Versão, ex: 17 ou 21] LTS**. Não utilize recursos de pré-visualização (preview features) ou versões não suportadas.
+3. **Versão do Java:** O projeto utiliza o **Java 21 LTS**. Não utilize recursos de pré-visualização (preview features) ou versões não suportadas.
 4. **Testes Unitários:** Novas funcionalidades devem vir acompanhadas de testes unitários utilizando **JUnit 5** e, se necessário, **Mockito**. Mantemos uma cobertura mínima recomendada de 80% do código modificado.
 
 ---
@@ -50,8 +50,8 @@ Para manter o código limpo, legível e auditável, siga estritamente estas regr
 4. **Adicione o Cabeçalho SPDX:** Certifique-se de que os novos arquivos possuam o bloco no topo:
    ```java
    /*
-    * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores do ProjectWizard.
-    * SPDX-License-Identifier: EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only
+    * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+    * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
     */
    ```
 5. **Execute a Validação Local:** Certifique-se de que o projeto compila perfeitamente e que todos os testes existentes passam localmente antes de enviar:

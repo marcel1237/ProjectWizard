@@ -32,10 +32,13 @@ Tecnologias planejadas:
 
 ## 💻 Tecnologias Utilizadas
 
-- Java 17
-- JavaFX 17
+- Java 21 (LTS)
+- JavaFX 21
 - Maven
-- AtlantaFX 2.0.1
+- AtlantaFX 2.1.0
+- RichTextFX 0.11.7
+- Ikonli (Material2 & FontAwesome5)
+- SQLite (Backups Industriais)
 - CSS
 - Git
 
@@ -308,16 +311,10 @@ github/
 
 ## 📋 Requisitos
 
-* Java 17
+* Java 21 (LTS)
 * Maven 3.9+
-
-Verificar versões instaladas:
-
-```bash
-java -version
-mvn -version
-
-```
+* Git
+* Shell Bash (Linux)
 
 ---
 
@@ -358,9 +355,17 @@ As funcionalidades são implementadas incrementalmente através de scripts "one-
 
 ## ⚖️ Licença
 
-Este projeto adota um regime de co-licenciamento quádruplo obrigatório (**Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND AGPL-3.0-only**) para garantir a máxima segurança, copyleft e proteção de patentes.
+Este projeto adota o modelo **Hexa Co-Licensing** (Licenciamento Conjunto de Seis Camadas) para garantir proteção industrial, copyleft de rede e liberdade de extensões:
 
-Para detalhes completos sobre termos, obrigações e cabeçalhos de arquivos, consulte o diretório `license/` ou o arquivo `LICENSE.md`.
+**SPDX-License-Identifier:** `BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0`
+
+### 🛡️ Uso Final e Distribuições Oficiais
+Para usuários regulares, aplicam-se os termos permissivos: **PWL-3.0, Apache-2.0, EPL-2.0, MPL-2.0 e UPL-1.0**.
+
+### 🛠️ Modificação e Obras Derivadas
+Qualquer modificação ou redistribuição ativa obrigatoriamente as cláusulas de atribuição da **BSD-3-Clause** e o copyleft de rede da **AGPL-3.0**.
+
+Para detalhes completos, consulte o arquivo [LICENSE.md](LICENSE.md).
 
 ```
 
