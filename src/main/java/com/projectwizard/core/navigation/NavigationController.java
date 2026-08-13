@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.core.navigation;
 
 import java.io.File;
@@ -14,6 +18,9 @@ import com.projectwizard.view.templates.TemplatesView;
 import com.projectwizard.workspace.ProjectWorkspace;
 import com.projectwizard.service.PersistenceService;
 
+/**
+ * Componente público { NavigationController}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public final class NavigationController {
 
     private static final NavigationController INSTANCE = new NavigationController();
@@ -71,6 +78,12 @@ public final class NavigationController {
             projectWorkspace.loadProject(projectRoot);
             workspace.setContent(projectWorkspace);
         }
+    }
+
+    public void shutdown() {
+        if (projectWorkspace != null) projectWorkspace.dispose();
+        if (workspace != null && workspace.getCenter() instanceof TerminalPane terminal) terminal.dispose();
+        if (workspace != null && workspace.getCenter() instanceof GeminiPane gemini) gemini.dispose();
     }
 
 }

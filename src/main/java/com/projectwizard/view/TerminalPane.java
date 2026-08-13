@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view;
 
 import javafx.scene.layout.BorderPane;
@@ -8,6 +12,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javafx.application.Platform;
 
+/**
+ * Componente público { TerminalPane}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class TerminalPane extends BorderPane {
     private final InlineCssTextArea outputArea = new InlineCssTextArea();
     private final TextField inputField = new TextField();
@@ -64,6 +71,10 @@ public class TerminalPane extends BorderPane {
     }
 
     public void sendCommand(String cmd) {
+        if (writer == null || process == null || !process.isAlive()) {
+            appendError("Shell indisponível.\n");
+            return;
+        }
         try {
             writer.write(cmd + "\n");
             writer.flush();
@@ -96,5 +107,15 @@ public class TerminalPane extends BorderPane {
 
     public void clear() {
         Platform.runLater(outputArea::clear);
+    }
+
+    public void dispose() {
+        try {
+            if (writer != null) writer.close();
+        } catch (IOException ignored) { }
+        if (process != null) {
+            process.destroy();
+            if (process.isAlive()) process.destroyForcibly();
+        }
     }
 }

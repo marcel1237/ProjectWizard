@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.service;
 
 import java.io.*;
@@ -5,19 +9,24 @@ import java.nio.file.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
+/**
+ * Componente público { BackupService}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class BackupService {
-    private static BackupService instance;
+    private static final Logger LOGGER = Logger.getLogger(BackupService.class.getName());
+    private static final long MAX_BACKUP_FILE_SIZE = 50L * 1024 * 1024;
+    private static final BackupService INSTANCE = new BackupService();
     private String projectPath;
     private String dbUrl;
 
     private BackupService() {}
 
     public static BackupService getInstance() {
-        if (instance == null) instance = new BackupService();
-        return instance;
+        return INSTANCE;
     }
 
     public void init(String projectPath) {
@@ -47,32 +56,35 @@ public class BackupService {
                         "change_summary TEXT, " +
                         "content BLOB)");
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Could not initialize backup database", e);
         }
     }
 
     public void performBuildBackup(String manualDesc) {
+        if (dbUrl == null) throw new IllegalStateException("Backup service was not initialized");
         try (Connection conn = DriverManager.getConnection(dbUrl)) {
             conn.setAutoCommit(false);
-            
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            String desc = manualDesc != null ? manualDesc : "Build Backup";
-
-            String insertBuild = "INSERT INTO builds (timestamp, description) VALUES (?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(insertBuild, Statement.RETURN_GENERATED_KEYS)) {
-                pstmt.setString(1, timestamp);
-                pstmt.setString(2, desc);
-                pstmt.executeUpdate();
-                
-                ResultSet rs = pstmt.getGeneratedKeys();
-                if (rs.next()) {
-                    long buildId = rs.getLong(1);
-                    backupFiles(conn, buildId);
+            try {
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String desc = manualDesc != null ? manualDesc : "Build Backup";
+                String insertBuild = "INSERT INTO builds (timestamp, description) VALUES (?, ?)";
+                try (PreparedStatement pstmt = conn.prepareStatement(insertBuild, Statement.RETURN_GENERATED_KEYS)) {
+                    pstmt.setString(1, timestamp);
+                    pstmt.setString(2, desc);
+                    pstmt.executeUpdate();
+                    try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                        if (!rs.next()) throw new SQLException("No build id was generated");
+                        backupFiles(conn, rs.getLong(1));
+                    }
                 }
+                conn.commit();
+            } catch (Exception exception) {
+                conn.rollback();
+                throw exception;
             }
-            conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Build backup failed and was rolled back", e);
+            throw new IllegalStateException("Could not create backup", e);
         }
     }
 
@@ -80,30 +92,40 @@ public class BackupService {
         Path root = Paths.get(projectPath);
         String insertFile = "INSERT INTO build_files (build_id, file_path, content) VALUES (?, ?, ?)";
         
-        try (PreparedStatement pstmt = conn.prepareStatement(insertFile)) {
-            Files.walk(root)
+        try (PreparedStatement pstmt = conn.prepareStatement(insertFile);
+             Stream<Path> paths = Files.walk(root)) {
+            paths
                 .filter(Files::isRegularFile)
                 .filter(p -> {
-                    String path = p.toString();
-                    return !path.contains("/target/") && 
-                           !path.contains("/.git/") && 
-                           !path.contains("/.idea/") && 
-                           !path.contains("/javadoc/") && 
-                           !path.contains(".bak") &&
-                           !path.contains(".pre") &&
-                           !path.endsWith(".projectwizard_backups.db");
+                    Path relative = root.relativize(p);
+                    for (Path part : relative) {
+                        String name = part.toString();
+                        if (name.equals("target") || name.equals(".git") || name.equals(".idea") || name.equals("javadoc")) return false;
+                    }
+                    String name = p.getFileName().toString();
+                    return !name.contains(".bak") && !name.contains(".pre")
+                            && !name.startsWith(".projectwizard_backups.db");
                 })
-                .forEach(p -> {
+                .forEachOrdered(p -> {
                     try {
-                        byte[] content = Files.readAllBytes(p);
+                        long size = Files.size(p);
+                        if (size > MAX_BACKUP_FILE_SIZE) {
+                            LOGGER.warning(() -> "Skipping backup file larger than 50 MB: " + p);
+                            return;
+                        }
                         pstmt.setLong(1, buildId);
                         pstmt.setString(2, root.relativize(p).toString());
-                        pstmt.setBytes(3, content);
+                        // sqlite-jdbc does not implement setBinaryStream; bounded byte[] is required.
+                        pstmt.setBytes(3, Files.readAllBytes(p));
                         pstmt.executeUpdate();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        throw new BackupFileException(e);
                     }
                 });
+        } catch (BackupFileException exception) {
+            if (exception.getCause() instanceof IOException io) throw io;
+            if (exception.getCause() instanceof SQLException sql) throw sql;
+            throw exception;
         }
     }
 
@@ -123,7 +145,11 @@ public class BackupService {
                 pstmt.executeUpdate();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Could not record saved file", e);
         }
+    }
+
+    private static final class BackupFileException extends RuntimeException {
+        private BackupFileException(Exception cause) { super(cause); }
     }
 }

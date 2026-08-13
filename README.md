@@ -2,7 +2,7 @@
 
 # Project Wizard 🧙‍♂️
 
-> Desktop Project Generator desenvolvido em Java 17, JavaFX e AtlantaFX.
+> Desktop Project Generator desenvolvido em Java 21, JavaFX e AtlantaFX.
 
 O **Project Wizard** é uma aplicação desktop cujo objetivo é facilitar a criação de novos projetos através de uma interface gráfica moderna, inspirada em IDEs como IntelliJ IDEA, Rider e Visual Studio.
 
@@ -180,6 +180,37 @@ Summary
 
 ```
 
+### ☁️ Cloud Wizard
+
+O primeiro subprojeto oficial de wizard está em [`cloudwizard/`](cloudwizard/). Ele fornece anotações e regras proprietárias para descrever capacidades cloud uma única vez e resolvê-las para nove providers oficiais: AWS, Google Cloud, Microsoft Azure, Oracle Cloud, IBM Cloud, Alibaba Cloud, Tencent Cloud, Huawei Cloud e Yandex Cloud.
+
+As dezesseis capabilities e seus 144 bindings estão na [matriz oficial completa](cloudwizard/README.md). Os nove providers integram enum, SPI, rules engine, CLI, gerador e testes automatizados.
+
+Anotações especializadas disponíveis no padrão:
+
+- `@CloudStorage`;
+- `@CloudFunction`;
+- `@CloudDatabase`;
+- `@CloudNoSqlDatabase`;
+- `@CloudQueue`;
+- `@CloudSecret`;
+- `@CloudObservability`;
+- `@CloudContainer`.
+- `@CloudIdentity`.
+- `@CloudApiGateway`.
+- `@CloudCache`.
+- `@CloudDns`.
+- `@CloudLoadBalancer`.
+- `@CloudContainerRegistry`.
+- `@CloudKeyManagement`.
+- `@CloudCertificate`.
+
+O núcleo é independente dos SDKs proprietários e aceita novos provedores através de uma SPI Java.
+
+Para pesquisa e planejamento de extensões, o subprojeto inclui um [asset com 88 nomes de providers](cloudwizard/assets/providers/README.md). Somente os nove providers oficiais possuem cobertura atribuída; todos os demais são registros `not-assessed`, sem avaliação ou referência ativa.
+
+Uma [matriz operacional complementar](cloudwizard/assets/providers/PROVIDERS_CLOUD_PUBLICAS_ASIA.md) detalha Alibaba Cloud, Tencent Cloud, Huawei Cloud e Yandex Cloud, todos integrantes do núcleo oficial `16/16`.
+
 ---
 
 ## 📦 Templates Planejados
@@ -329,9 +360,23 @@ mvn clean javafx:run
 
 ## 📦 Build e Empacotamento
 
+O primeiro wizard oficial está em `cloudwizard/`, com nove providers oficiais, dezesseis capacidades portáveis, dezesseis anotações especializadas e doze templates de arquitetura. **O Cloud Wizard é um produto proprietário, comercial e pago, licenciado separadamente do ProjectWizard aberto.** Consulte `cloudwizard/LICENSE.md`, `cloudwizard/MODELO_NEGOCIOS.md`, `DOCUMENTACAO_PROJETO.html` e `RELATORIO_ALTERACOES.md`.
+
+```bash
+./build-all.sh
+```
+
+Esse comando valida o ProjectWizard e o Cloud Wizard. Cada `mvn verify` também atualiza a respectiva documentação Javadoc em `javadoc/`.
+
 ```bash
 mvn clean package
 
+```
+
+Para validar e empacotar o ProjectWizard e todos os wizards oficiais:
+
+```bash
+./build-all.sh
 ```
 
 ---
@@ -367,6 +412,4 @@ Qualquer modificação ou redistribuição ativa obrigatoriamente as cláusulas 
 
 Para detalhes completos, consulte o arquivo [LICENSE.md](LICENSE.md).
 
-```
-
-```
+Essa licença cobre o ProjectWizard principal. O subprojeto `cloudwizard/` é proprietário, comercial e pago, sob [licença independente](cloudwizard/LICENSE.md); os termos abertos da raiz não concedem direitos sobre ele.

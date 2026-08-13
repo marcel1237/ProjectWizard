@@ -1,0 +1,12 @@
+# Copyright (C) 2026 Marcel Aparecido de Andrade. Todos os direitos reservados.
+# SPDX-License-Identifier: LicenseRef-CloudWizard-Commercial-1.0
+# Software proprietário, comercial e pago. Consulte LICENSE.md.
+com.projectwizard.cloudwizard.provider.AwsCloudAdapter
+com.projectwizard.cloudwizard.provider.GoogleCloudAdapter
+com.projectwizard.cloudwizard.provider.AzureCloudAdapter
+com.projectwizard.cloudwizard.provider.OracleCloudAdapter
+com.projectwizard.cloudwizard.provider.IbmCloudAdapter
+com.projectwizard.cloudwizard.provider.AlibabaCloudAdapter
+com.projectwizard.cloudwizard.provider.TencentCloudAdapter
+com.projectwizard.cloudwizard.provider.HuaweiCloudAdapter
+com.projectwizard.cloudwizard.provider.YandexCloudAdapter

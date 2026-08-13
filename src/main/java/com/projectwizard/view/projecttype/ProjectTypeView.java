@@ -1,9 +1,16 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view.projecttype;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+/**
+ * Componente público { ProjectTypeView}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class ProjectTypeView extends BorderPane {
 
     public ProjectTypeView() {
@@ -32,7 +39,8 @@ public class ProjectTypeView extends BorderPane {
                 "Desktop",
                 "Spring",
                 "Library",
-                "CLI"
+                "CLI",
+                "Cloud"
         );
 
         category.getSelectionModel().selectFirst();
@@ -100,6 +108,12 @@ public class ProjectTypeView extends BorderPane {
                         "📚",
                         "Java Library",
                         "Reusable library."
+                ),
+
+                new ProjectCard(
+                        "☁",
+                        "Cloud Wizard",
+                        "Portable projects for AWS, Google, Azure, Oracle and IBM Cloud."
                 )
 
         );
@@ -142,7 +156,7 @@ public class ProjectTypeView extends BorderPane {
         Separator sep = new Separator();
 
         Label tech = new Label(
-                "Java 17\n" +
+                "Java 21\n" +
                 "JavaFX\n" +
                 "AtlantaFX\n" +
                 "Maven"

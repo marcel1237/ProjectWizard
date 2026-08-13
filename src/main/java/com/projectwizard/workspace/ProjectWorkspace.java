@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.workspace;
 
 import java.io.File;
@@ -12,6 +16,9 @@ import com.projectwizard.view.explorer.PackageExplorer;
 import com.projectwizard.view.explorer.FileTreeCell;
 import com.projectwizard.service.BackupService;
 
+/**
+ * Componente público { ProjectWorkspace}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class ProjectWorkspace extends BorderPane {
 
     private Project currentProject;
@@ -35,6 +42,9 @@ public class ProjectWorkspace extends BorderPane {
     }
 
     public void loadProject(File projectRoot) {
+        if (terminalPane != null) terminalPane.dispose();
+        if (geminiPane != null) geminiPane.dispose();
+        if (editor != null) editor.clear();
         currentProject = new Project(projectRoot);
         BackupService.getInstance().init(projectRoot.getAbsolutePath());
         
@@ -113,8 +123,13 @@ public class ProjectWorkspace extends BorderPane {
 
             new Thread(() -> {
                 // 1. Backup
-                BackupService.getInstance().performBuildBackup("Manual Build Triggered");
-                terminalPane.appendOutput("✅ Backup concluído.\n");
+                try {
+                    BackupService.getInstance().performBuildBackup("Manual Build Triggered");
+                    terminalPane.appendOutput("✅ Backup concluído.\n");
+                } catch (RuntimeException exception) {
+                    terminalPane.appendError("❌ Backup falhou; build cancelado: " + exception.getMessage() + "\n");
+                    return;
+                }
 
                 // 2. Build (Executa script se existir)
                 File buildScript = new File(currentProject.getRootDirectory(), "build.sh");
@@ -128,7 +143,7 @@ public class ProjectWorkspace extends BorderPane {
                 javafx.application.Platform.runLater(() -> {
                     versionsPane.loadVersions();
                 });
-            }).start();
+            }, "project-build").start();
         });
     }
 
@@ -144,5 +159,11 @@ public class ProjectWorkspace extends BorderPane {
                 }
             }
         });
+    }
+
+    public void dispose() {
+        if (terminalPane != null) terminalPane.dispose();
+        if (geminiPane != null) geminiPane.dispose();
+        if (editor != null) editor.clear();
     }
 }

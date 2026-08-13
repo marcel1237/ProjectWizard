@@ -1,0 +1,6 @@
+/target/
+/.idea/
+*.iml
+*.tmp
+.projectwizard_backups.db
+Project_Knowledge_Base.pdf

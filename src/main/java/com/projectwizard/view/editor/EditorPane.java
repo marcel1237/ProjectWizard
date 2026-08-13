@@ -1,8 +1,16 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view.editor;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javafx.concurrent.Task;
 import javafx.scene.layout.BorderPane;
@@ -25,6 +33,13 @@ public class EditorPane extends BorderPane {
     private final CodeArea codeArea = new CodeArea();
     private final JetBrainsSyntaxScanner scanner = new JetBrainsSyntaxScanner();
     private File currentFile;
+    private final ExecutorService highlightExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread thread = new Thread(r, "syntax-highlighter");
+        thread.setDaemon(true);
+        return thread;
+    });
+    private final AtomicLong documentVersion = new AtomicLong();
+    private Future<?> currentHighlight;
 
     public EditorPane(File file, String content) {
         this.currentFile = file;
@@ -60,6 +75,9 @@ public class EditorPane extends BorderPane {
 
     private void runHighlightingAsync() {
         String text = codeArea.getText();
+        long version = documentVersion.incrementAndGet();
+
+        if (currentHighlight != null) currentHighlight.cancel(true);
 
         Task<StyleSpans<Collection<String>>> highlightTask = new Task<>() {
             @Override
@@ -68,12 +86,11 @@ public class EditorPane extends BorderPane {
             }
         };
 
-        highlightTask.setOnSucceeded(
-                e -> codeArea.setStyleSpans(0, highlightTask.getValue()));
+        highlightTask.setOnSucceeded(e -> {
+            if (version == documentVersion.get()) codeArea.setStyleSpans(0, highlightTask.getValue());
+        });
 
-        Thread thread = new Thread(highlightTask);
-        thread.setDaemon(true);
-        thread.start();
+        currentHighlight = highlightExecutor.submit(highlightTask);
     }
 
     private StyleSpans<Collection<String>> computeHighlighting(String text) {
@@ -114,5 +131,12 @@ public class EditorPane extends BorderPane {
 
     public File getFile() {
         return currentFile;
+    }
+
+    public void setFile(File file) { this.currentFile = file; }
+
+    public void dispose() {
+        if (currentHighlight != null) currentHighlight.cancel(true);
+        highlightExecutor.shutdownNow();
     }
 }

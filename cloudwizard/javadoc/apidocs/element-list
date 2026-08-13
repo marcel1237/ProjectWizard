@@ -1,0 +1,7 @@
+com.projectwizard.cloudwizard.annotation
+com.projectwizard.cloudwizard.cli
+com.projectwizard.cloudwizard.generator
+com.projectwizard.cloudwizard.model
+com.projectwizard.cloudwizard.provider
+com.projectwizard.cloudwizard.rule
+com.projectwizard.cloudwizard.template

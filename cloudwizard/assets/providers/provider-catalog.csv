@@ -1,0 +1,89 @@
+id,provider,organization,segment,relationship,coverage,known_capabilities,official_url,adapter_owner,notes
+aws,Amazon Web Services,Amazon,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://aws.amazon.com/,Cloud Wizard,Provider oficial testado
+google-cloud,Google Cloud,Google,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://cloud.google.com/,Cloud Wizard,Provider oficial testado
+microsoft-azure,Microsoft Azure,Microsoft,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://azure.microsoft.com/,Cloud Wizard,Provider oficial testado
+oracle-cloud,Oracle Cloud Infrastructure,Oracle,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://www.oracle.com/cloud/,Cloud Wizard,Provider oficial testado
+ibm-cloud,IBM Cloud,IBM,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://www.ibm.com/cloud,Cloud Wizard,Provider oficial testado
+sap-btp,SAP Business Technology Platform,SAP,enterprise-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.sap.com/products/technology-platform.html,External author or user,Sem avaliação ou referência ativa
+apple-cloudkit,Apple CloudKit,Apple,backend-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://developer.apple.com/icloud/cloudkit/,External author or user,Sem avaliação ou referência ativa
+intel-tiber,Intel Tiber AI Cloud,Intel,ai-compute-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.intel.com/content/www/us/en/developer/tools/devcloud/overview.html,External author or user,Sem avaliação ou referência ativa
+hpe-greenlake,HPE GreenLake,Hewlett Packard Enterprise,hybrid-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.hpe.com/us/en/greenlake.html,External author or user,Sem avaliação ou referência ativa
+dell-apex,Dell APEX,Dell Technologies,hybrid-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.dell.com/en-us/dt/apex/index.htm,External author or user,Sem avaliação ou referência ativa
+amd-developer-cloud,AMD Developer Cloud,AMD,ai-compute-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.amd.com/en/developer/resources/cloud-access/amd-developer-cloud.html,External author or user,Sem avaliação ou referência ativa
+nvidia-cloud,NVIDIA DGX Cloud and Cloud Functions,NVIDIA,ai-compute-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.nvidia.com/en-us/data-center/dgx-cloud/,External author or user,Sem avaliação ou referência ativa
+red-hat-cloud,Red Hat OpenShift Cloud Services,Red Hat,hybrid-cloud-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.redhat.com/en/technologies/cloud-computing/openshift/cloud-services,External author or user,Sem avaliação ou referência ativa
+ale-rainbow,Alcatel-Lucent Enterprise Rainbow,ALE International,communications-cpaas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.al-enterprise.com/en/rainbow/developers,External author or user,Sem avaliação ou referência ativa
+alibaba-cloud,Alibaba Cloud,Alibaba Group,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://www.alibabacloud.com/product,Cloud Wizard,Provider oficial testado
+tencent-cloud,Tencent Cloud,Tencent,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://www.tencentcloud.com/products,Cloud Wizard,Provider oficial testado
+huawei-cloud,Huawei Cloud,Huawei,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://www.huaweicloud.com/intl/en-us/product/,Cloud Wizard,Provider oficial testado
+baidu-ai-cloud,Baidu AI Cloud,Baidu,public-cloud-ai,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://cloud.baidu.com/,External author or user,Documentação principal em chinês
+kingsoft-cloud,Kingsoft Cloud,Kingsoft,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.ksyun.com/,External author or user,Exige avaliação regional
+ucloud,UCloud,UCloud,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.ucloudglobal.com/,External author or user,Exige avaliação regional
+qingcloud,QingCloud,QingCloud,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.qingcloud.com/,External author or user,Exige avaliação regional
+digitalocean,DigitalOcean,DigitalOcean,developer-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.digitalocean.com/products,External author or user,Cloud focada em desenvolvedores
+akamai-cloud,Akamai Cloud Computing,Akamai,distributed-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.akamai.com/products/cloud-computing,External author or user,Inclui a plataforma originada da Linode
+ovhcloud,OVHcloud,OVH Groupe,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.ovhcloud.com/en/public-cloud/,External author or user,Cloud europeia
+scaleway,Scaleway,Scaleway,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.scaleway.com/en/all-products/,External author or user,Cloud europeia
+vultr,Vultr,The Constant Company,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.vultr.com/products/,External author or user,Infraestrutura distribuída
+hetzner-cloud,Hetzner Cloud,Hetzner,iaas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.hetzner.com/cloud/,External author or user,Infraestrutura europeia
+ionos-cloud,IONOS Cloud,IONOS,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://cloud.ionos.com/,External author or user,Cloud europeia
+upcloud,UpCloud,UpCloud,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://upcloud.com/products,External author or user,Infraestrutura europeia
+exoscale,Exoscale,A1 Digital,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.exoscale.com/,External author or user,Cloud europeia
+leaseweb-cloud,Leaseweb Cloud,Leaseweb,iaas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.leaseweb.com/cloud,External author or user,Infraestrutura global
+kamatera,Kamatera,Kamatera,iaas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.kamatera.com/,External author or user,Infraestrutura global
+rackspace,Rackspace Technology,Rackspace,multicloud-services,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.rackspace.com/cloud,External author or user,Serviços gerenciados multicloud
+ntt-data-cloud,NTT DATA Cloud,NTT DATA,enterprise-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.nttdata.com/global/en/services/cloud,External author or user,Serviços e integração cloud
+orange-cloud,Orange Cloud Avenue,Orange Business,enterprise-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.orange-business.com/en/solutions/cloud,External author or user,Cloud empresarial
+open-telekom-cloud,Open Telekom Cloud,Deutsche Telekom,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.open-telekom-cloud.com/en,External author or user,Cloud europeia soberana
+stackit,STACKIT,Schwarz Digits,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.stackit.de/en/,External author or user,Cloud europeia soberana
+aruba-cloud,Aruba Cloud,Aruba,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.arubacloud.com/,External author or user,Cloud europeia
+civo,Civo,Civo,developer-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.civo.com/,External author or user,Cloud com foco em Kubernetes
+cloudflare,Cloudflare Developer Platform,Cloudflare,edge-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.cloudflare.com/developer-platform/,External author or user,Edge e serverless distribuído
+fastly,Fastly Compute,Fastly,edge-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.fastly.com/products/edge-compute,External author or user,Compute no edge
+gcore,Gcore Cloud,Gcore,edge-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://gcore.com/cloud,External author or user,Cloud e edge global
+bunny,bunny.net,bunny.net,edge-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://bunny.net/,External author or user,CDN e serviços de edge
+heroku,Heroku,Salesforce,paas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.heroku.com/platform/,External author or user,PaaS para aplicações
+vercel,Vercel,Vercel,frontend-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://vercel.com/,External author or user,Frontend e funções serverless
+netlify,Netlify,Netlify,frontend-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.netlify.com/platform/,External author or user,Frontend e funções serverless
+render,Render,Render,paas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://render.com/,External author or user,PaaS para aplicações e dados
+fly-io,Fly.io,Fly.io,distributed-paas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://fly.io/,External author or user,Execução distribuída de aplicações
+railway,Railway,Railway,paas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://railway.com/,External author or user,PaaS para aplicações
+platform-sh,Platform.sh,Platform.sh,paas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://platform.sh/,External author or user,PaaS empresarial
+northflank,Northflank,Northflank,paas,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://northflank.com/,External author or user,PaaS e workloads em contêiner
+koyeb,Koyeb,Koyeb,serverless-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.koyeb.com/,External author or user,Aplicações serverless distribuídas
+qovery,Qovery,Qovery,platform-engineering,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.qovery.com/,External author or user,Plataforma sobre infraestrutura cloud
+cloud-66,Cloud 66,Cloud 66,paas-tooling,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.cloud66.com/,External author or user,Orquestração sobre clouds do usuário
+mongodb-atlas,MongoDB Atlas,MongoDB,database-cloud,DISCOVERY_ASSET,not-assessed,NOSQL_DATABASE,https://www.mongodb.com/atlas,External author or user,Provider especializado em dados
+snowflake,Snowflake AI Data Cloud,Snowflake,data-cloud,DISCOVERY_ASSET,not-assessed,MANAGED_SQL_PARTIAL|OBSERVABILITY_PARTIAL,https://www.snowflake.com/en/data-cloud/,External author or user,Plataforma especializada em dados
+databricks,Databricks Data Intelligence Platform,Databricks,data-ai-cloud,DISCOVERY_ASSET,not-assessed,MANAGED_SQL_PARTIAL|OBSERVABILITY_PARTIAL,https://www.databricks.com/product/data-intelligence-platform,External author or user,Plataforma especializada em dados e IA
+supabase,Supabase,Supabase,backend-as-a-service,DISCOVERY_ASSET,not-assessed,MANAGED_SQL|OBJECT_STORAGE|IAM_PARTIAL|SERVERLESS_FUNCTION_PARTIAL,https://supabase.com/,External author or user,Backend baseado em PostgreSQL
+neon,Neon,Neon,database-cloud,DISCOVERY_ASSET,not-assessed,MANAGED_SQL,https://neon.com/,External author or user,PostgreSQL serverless
+planetscale,PlanetScale,PlanetScale,database-cloud,DISCOVERY_ASSET,not-assessed,MANAGED_SQL,https://planetscale.com/,External author or user,Database como serviço
+cockroachdb-cloud,CockroachDB Cloud,Cockroach Labs,database-cloud,DISCOVERY_ASSET,not-assessed,MANAGED_SQL,https://www.cockroachlabs.com/cloud/,External author or user,SQL distribuído gerenciado
+aiven,Aiven,Aiven,data-cloud,DISCOVERY_ASSET,not-assessed,MANAGED_SQL|NOSQL_DATABASE_PARTIAL|MESSAGE_QUEUE_PARTIAL,https://aiven.io/,External author or user,Serviços de dados gerenciados
+confluent-cloud,Confluent Cloud,Confluent,event-streaming,DISCOVERY_ASSET,not-assessed,MESSAGE_QUEUE_PARTIAL,https://www.confluent.io/confluent-cloud/,External author or user,Streaming de eventos gerenciado
+redis-cloud,Redis Cloud,Redis,database-cloud,DISCOVERY_ASSET,not-assessed,NOSQL_DATABASE_PARTIAL,https://redis.io/cloud/,External author or user,Data store especializado
+elastic-cloud,Elastic Cloud,Elastic,observability-search,DISCOVERY_ASSET,not-assessed,OBSERVABILITY,https://www.elastic.co/cloud,External author or user,Busca e observabilidade gerenciadas
+grafana-cloud,Grafana Cloud,Grafana Labs,observability-cloud,DISCOVERY_ASSET,not-assessed,OBSERVABILITY,https://grafana.com/products/cloud/,External author or user,Observabilidade gerenciada
+sentry,Sentry,Sentry,observability-cloud,DISCOVERY_ASSET,not-assessed,OBSERVABILITY_PARTIAL,https://sentry.io/,External author or user,Monitoramento de aplicações
+backblaze-b2,Backblaze B2 Cloud Storage,Backblaze,storage-cloud,DISCOVERY_ASSET,not-assessed,OBJECT_STORAGE,https://www.backblaze.com/cloud-storage,External author or user,Object storage especializado
+wasabi,Wasabi Hot Cloud Storage,Wasabi Technologies,storage-cloud,DISCOVERY_ASSET,not-assessed,OBJECT_STORAGE,https://wasabi.com/cloud-storage,External author or user,Object storage especializado
+cloudinary,Cloudinary,Cloudinary,media-cloud,DISCOVERY_ASSET,not-assessed,OBJECT_STORAGE_PARTIAL,https://cloudinary.com/,External author or user,Gestão de mídia especializada
+auth0,Auth0,Okta,identity-cloud,DISCOVERY_ASSET,not-assessed,IDENTITY_ACCESS_MANAGEMENT_PARTIAL,https://auth0.com/,External author or user,Identidade para aplicações
+okta,Okta Workforce and Customer Identity,Okta,identity-cloud,DISCOVERY_ASSET,not-assessed,IDENTITY_ACCESS_MANAGEMENT_PARTIAL,https://www.okta.com/,External author or user,Identidade especializada
+vmware-cloud,VMware Cloud Foundation,Broadcom,hybrid-cloud-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.vmware.com/products/cloud-foundation.html,External author or user,Plataforma privada e híbrida
+nutanix-cloud,Nutanix Cloud Platform,Nutanix,hybrid-cloud-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.nutanix.com/products/cloud-platform,External author or user,Plataforma privada e híbrida
+openstack,OpenStack,OpenInfra Foundation,open-source-cloud-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.openstack.org/software/,External author or user,Software para construir clouds próprias
+suse-rancher,SUSE Rancher Prime,SUSE,container-platform,DISCOVERY_ASSET,not-assessed,CONTAINER_ORCHESTRATION,https://www.suse.com/products/suse-rancher/,External author or user,Gestão Kubernetes multicloud
+canonical-cloud,Canonical Cloud Solutions,Canonical,private-cloud-platform,DISCOVERY_ASSET,not-assessed,CONTAINER_ORCHESTRATION_PARTIAL|REQUIRES_VALIDATION,https://canonical.com/solutions/cloud,External author or user,OpenStack e Kubernetes privados
+mirantis,Mirantis Container Cloud,Mirantis,container-platform,DISCOVERY_ASSET,not-assessed,CONTAINER_ORCHESTRATION,https://www.mirantis.com/software/container-cloud/,External author or user,Plataforma de contêineres
+apache-cloudstack,Apache CloudStack,Apache Software Foundation,open-source-cloud-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://cloudstack.apache.org/,External author or user,Software para construir IaaS
+proxmox-ve,Proxmox VE,Proxmox Server Solutions,virtualization-platform,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.proxmox.com/en/products/proxmox-virtual-environment/overview,External author or user,Virtualização e cloud privada
+yandex-cloud,Yandex Cloud,Yandex,public-cloud,OFFICIAL_CORE,16/16,ALL_16,https://yandex.cloud/en/,Cloud Wizard,Provider oficial testado com validação jurídica e regional obrigatória
+vk-cloud,VK Cloud,VK,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://cloud.vk.com/,External author or user,Validar restrições legais e regionais
+selectel,Selectel,Selectel,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://selectel.ru/en/,External author or user,Validar restrições legais e regionais
+naver-cloud,NAVER Cloud Platform,NAVER,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.ncloud.com/,External author or user,Cloud regional asiática
+nhn-cloud,NHN Cloud,NHN,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.nhncloud.com/,External author or user,Cloud regional asiática
+kt-cloud,KT Cloud,KT,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://www.ktcloud.com/,External author or user,Cloud regional asiática
+sakura-cloud,Sakura Cloud,Sakura Internet,public-cloud,DISCOVERY_ASSET,not-assessed,REQUIRES_VALIDATION,https://cloud.sakura.ad.jp/,External author or user,Cloud regional japonesa
+ibm-red-hat-openshift,Red Hat OpenShift on IBM Cloud,IBM and Red Hat,managed-container-platform,DISCOVERY_ASSET,not-assessed,CONTAINER_ORCHESTRATION,https://www.ibm.com/products/openshift,External author or user,Oferta conjunta especializada

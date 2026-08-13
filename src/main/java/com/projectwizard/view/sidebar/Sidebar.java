@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view.sidebar;
 
 import com.projectwizard.core.navigation.NavigationController;
@@ -8,6 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+/**
+ * Componente público { Sidebar}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class Sidebar extends VBox {
 
     public Sidebar() {
@@ -36,8 +43,6 @@ public class Sidebar extends VBox {
         VBox.setVgrow(b, Priority.NEVER);
 
         b.setOnAction(e -> {
-
-            System.out.println("[NAV] " + target);
 
             NavigationController
                     .getInstance()

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view;
 
 import javafx.application.Platform;
@@ -9,7 +13,11 @@ import com.projectwizard.service.PersistenceService;
 import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.nio.charset.StandardCharsets;
 
+/**
+ * Componente público { GeminiPane}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class GeminiPane extends VBox {
     private final WebView chatHistory = new WebView();
     private final TextField userInput = new TextField();
@@ -92,12 +100,13 @@ public class GeminiPane extends VBox {
                 pb.redirectErrorStream(true);
                 Process process = pb.start();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line).append("\n");
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) response.append(line).append("\n");
                 }
+                int exitCode = process.waitFor();
+                if (exitCode != 0) throw new IOException("AI command exited with code " + exitCode + ": " + response);
                 
                 String finalResponse = response.toString();
                 Platform.runLater(() -> {
@@ -126,13 +135,23 @@ public class GeminiPane extends VBox {
 
     private void appendMessage(String sender, String msg) {
         htmlContent.append("<div style='margin-bottom: 15px;'>")
-                   .append("<b>").append(sender).append("</b><br>")
-                   .append(msg.replace("\n", "<br>"))
+                   .append("<b>").append(escapeHtml(sender)).append("</b><br>")
+                   .append(escapeHtml(msg).replace("\n", "<br>"))
                    .append("</div>");
         updateChat();
     }
 
     private void updateChat() {
         Platform.runLater(() -> chatHistory.getEngine().loadContent(htmlContent.toString() + "</body></html>"));
+    }
+
+    private String escapeHtml(String text) {
+        if (text == null) return "";
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+                .replace("\"", "&quot;").replace("'", "&#39;");
+    }
+
+    public void dispose() {
+        executor.shutdownNow();
     }
 }

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view.editor;
 
 import javafx.scene.control.*;
@@ -13,6 +17,9 @@ import com.projectwizard.core.ApplicationContext;
 import com.projectwizard.service.PersistenceService;
 import com.projectwizard.service.BackupService;
 
+/**
+ * Componente público { EditorHost}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class EditorHost extends BorderPane {
     private final TabPane tabPane = new TabPane();
     private final PersistenceService persistence = new PersistenceService();
@@ -76,6 +83,7 @@ public class EditorHost extends BorderPane {
             if (file != null) {
                 try {
                     ApplicationContext.getInstance().getFileSystemService().saveFile(file, pane.getText());
+                    pane.setFile(file);
                     selected.setText(file.getName());
                 } catch (Exception ex) {
                     ApplicationContext.getInstance().getDialogService().showError("Error", ex.getMessage());
@@ -103,12 +111,17 @@ public class EditorHost extends BorderPane {
             }
         }
         Tab tab = new Tab(file.getName());
-        tab.setContent(new EditorPane(file, content));
+        EditorPane pane = new EditorPane(file, content);
+        tab.setContent(pane);
+        tab.setOnClosed(event -> pane.dispose());
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
     }
 
     public void clear() {
+        tabPane.getTabs().forEach(tab -> {
+            if (tab.getContent() instanceof EditorPane pane) pane.dispose();
+        });
         tabPane.getTabs().clear();
     }
 

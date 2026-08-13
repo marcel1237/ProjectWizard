@@ -1,6 +1,11 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.view;
 
 import com.projectwizard.core.ApplicationContext;
+import com.projectwizard.core.navigation.NavigationController;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -9,6 +14,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Componente público { MainWindow}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class MainWindow {
 
     private final ApplicationContext context =
@@ -65,6 +73,8 @@ public class MainWindow {
         stage.setTitle(
                 context.getApplicationName()
         );
+
+        stage.setOnCloseRequest(event -> NavigationController.getInstance().shutdown());
 
         stage.centerOnScreen();
         stage.show();

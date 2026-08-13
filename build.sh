@@ -1,9 +1,11 @@
 #!/bin/bash
 echo "--- Iniciando Build Maven (ProjectWizard) ---"
 
-# Garante que estamos usando o Java 21 LTS para o build
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-export PATH=$JAVA_HOME/bin:$PATH
+# Respeita JAVA_HOME/PATH do ambiente para funcionar em Linux, macOS e Windows/WSL.
+if ! command -v java >/dev/null || ! command -v mvn >/dev/null; then
+    echo "❌ Java 21 e Maven precisam estar disponíveis no PATH."
+    exit 1
+fi
 
 mvn clean compile
 

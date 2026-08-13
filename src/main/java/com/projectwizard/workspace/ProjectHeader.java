@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2026 Marcel Aparecido de Andrade e Colaboradores.
+ * SPDX-License-Identifier: BSD-3-Clause AND Apache-2.0 AND EPL-2.0 AND MPL-2.0 AND UPL-1.0 AND AGPL-3.0-only AND LicenseRef-PWL-3.0
+ */
 package com.projectwizard.workspace;
 
 import javafx.geometry.Insets;
@@ -12,6 +16,9 @@ import javafx.scene.text.FontWeight;
 import com.projectwizard.model.Project;
 import com.projectwizard.service.git.GitService;
 
+/**
+ * Componente público { ProjectHeader}. Consulte a documentação do pacote para seu papel na arquitetura.
+ */
 public class ProjectHeader extends VBox {
 
     private Project project;
