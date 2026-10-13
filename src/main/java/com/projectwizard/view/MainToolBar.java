@@ -35,6 +35,7 @@ public class MainToolBar extends ToolBar {
         shell.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.SHELL_SCRIPTING));
 
         Button settings = new Button("⚙ Settings");
+        settings.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.SETTINGS));
 
         getItems().addAll(
                 newProject, open,
