@@ -91,10 +91,32 @@ public class PackageExplorer extends TreeView<File> {
 
         File[] filtered = Arrays.stream(files)
             .filter(f -> !shouldFilter(f.getName()))
-            .sorted()
+            .sorted((f1, f2) -> {
+                boolean d1 = f1.isDirectory();
+                boolean d2 = f2.isDirectory();
+                if (d1 && !d2) return -1;
+                if (!d1 && d2) return 1;
+
+                if (!d1 && !d2) {
+                    String ext1 = getExtension(f1.getName());
+                    String ext2 = getExtension(f2.getName());
+                    int extCmp = ext1.compareToIgnoreCase(ext2);
+                    if (extCmp != 0) return extCmp;
+                }
+
+                return f1.getName().compareToIgnoreCase(f2.getName());
+            })
             .toArray(File[]::new);
 
         return filtered.length > 0 ? filtered : null;
+    }
+
+    private String getExtension(String name) {
+        int idx = name.lastIndexOf('.');
+        if (idx > 0 && idx < name.length() - 1) {
+            return name.substring(idx + 1);
+        }
+        return "";
     }
 
     private boolean shouldFilter(String name) {
