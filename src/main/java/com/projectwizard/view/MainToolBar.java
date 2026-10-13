@@ -28,19 +28,13 @@ public class MainToolBar extends ToolBar {
         Button browser = new Button("🌐 Browser");
         browser.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.BROWSER));
 
-        Button ai = new Button("✨ Gemini");
-        ai.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.GEMINI));
-
-        Button shell = new Button("🐚 Shell");
-        shell.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.SHELL_SCRIPTING));
-
         Button settings = new Button("⚙ Settings");
         settings.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.SETTINGS));
 
         getItems().addAll(
                 newProject, open,
                 new Separator(),
-                workspace, browser, ai, shell,
+                workspace, browser,
                 new Separator(),
                 settings
         );
