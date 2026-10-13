@@ -28,9 +28,6 @@ public class MainToolBar extends ToolBar {
         Button browser = new Button("🌐 Browser");
         browser.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.BROWSER));
 
-        Button terminal = new Button("💻 Term");
-        terminal.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.TERMINAL));
-
         Button ai = new Button("✨ Gemini");
         ai.setOnAction(e -> NavigationController.getInstance().navigate(NavigationTarget.GEMINI));
 
@@ -42,7 +39,7 @@ public class MainToolBar extends ToolBar {
         getItems().addAll(
                 newProject, open,
                 new Separator(),
-                workspace, browser, terminal, ai, shell,
+                workspace, browser, ai, shell,
                 new Separator(),
                 settings
         );
